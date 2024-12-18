@@ -15,19 +15,39 @@ export const useZustand = create<ZustandStore>()(
         },
         methods: {
             store_cycleBoards: (direction) => {
-                const current = get().state.selected.board;
-                const boards = mockDb.Boards;
+                const currentSelection = get().state.selected;
+                const BE_boards = mockDb.Boards;
                 let following: number;
 
                 if (direction === 'next') {
-                    following = boards[current + 1] ? current + 1 : 0;
+                    following = BE_boards[currentSelection.board + 1] ? currentSelection.board + 1 : 0;
                 } else {
-                    following = boards[current - 1] ? current - 1 : boards.length - 1;
+                    following = BE_boards[currentSelection.board - 1] ? currentSelection.board - 1 : BE_boards.length - 1;
                 }
 
                 set((draftState) => {
                     draftState.state.selected.board = following;
                 });
+
+                if (currentSelection.hoverPads.length !== BE_boards[following].socketNames.hoverPads.length) {
+                    const newArr = Array.from({ length: BE_boards[following].socketNames.hoverPads.length }).map((_, idx) =>
+                        currentSelection.hoverPads[idx] ? currentSelection.hoverPads[idx] : 0,
+                    );
+
+                    set((draftState) => {
+                        draftState.state.selected.hoverPads = newArr;
+                    });
+                }
+
+                if (currentSelection.ornaments.length !== BE_boards[following].socketNames.ornaments.length) {
+                    const newArr = Array.from({ length: BE_boards[following].socketNames.ornaments.length }).map((_, idx) =>
+                        currentSelection.ornaments[idx] ? currentSelection.ornaments[idx] : 0,
+                    );
+
+                    set((draftState) => {
+                        draftState.state.selected.ornaments = newArr;
+                    });
+                }
             },
 
             store_cycleEngines: (direction) => {

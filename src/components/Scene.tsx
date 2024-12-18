@@ -1,15 +1,9 @@
 import { Canvas } from '@react-three/fiber';
 import { Backdrop, Bounds, Environment, Float, OrbitControls } from '@react-three/drei';
-import LoadBoard from './three/LoadBoard';
-import { useZustand } from '../zustand';
-import mockDb from '../mockApi/mockDb.json';
+import HoverBoardAssembly from './three/HoverBoardAssembly';
 import { Color, MathUtils } from 'three';
 
-const { Boards, Engines, HoverPads, Ornaments } = mockDb;
-
 const Scene = () => {
-    const selectedBoard = useZustand((store) => store.state.selected.board);
-
     return (
         <Canvas
             shadows={true}
@@ -27,7 +21,7 @@ const Scene = () => {
                     floatIntensity={1} // Up/down float intensity, works like a multiplier with floatingRange,defaults to 1
                     floatingRange={[0.1, 0.125]} // Range of y-axis values the object will float within, defaults to [-0.1,0.1]
                 >
-                    <LoadBoard board={Boards[selectedBoard].filePath} />
+                    <HoverBoardAssembly />
                 </Float>
             </Bounds>
 

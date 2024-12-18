@@ -1,8 +1,3 @@
-export enum Board {
-    'Hovr_1',
-    'Hovr_2',
-}
-
 export type DB_BoardType = {
     id: number;
     name: string;
