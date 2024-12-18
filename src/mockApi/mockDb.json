@@ -1,0 +1,60 @@
+{
+    "Boards": [
+        {
+            "id": 0,
+            "name": "Ol' Regular",
+            "description": "Your run of the mill Hoverboard, a tried and true classic!",
+            "filePath": "/gltf/Hovr_1.glb",
+            "socketNames": {
+                "engine": "socket_engine",
+                "hoverPads": ["socket_pad_1", "socket_pad_2"],
+                "ornaments": ["socket_ornament_hood"]
+            }
+        },
+        {
+            "id": 1,
+            "name": "The Chubber",
+            "description": "This boards' love handles allow more variety in feet placement!",
+            "filePath": "/gltf/Hovr_2.glb",
+            "socketNames": {
+                "engine": "socket_engine",
+                "hoverPads": ["socket_pad_1", "socket_pad_2"],
+                "ornaments": ["socket_ornament_hood"]
+            }
+        }
+    ],
+    "Engines": [
+        {
+            "id": 0,
+            "name": "OVR9000",
+            "description": "Copied often, seldom surpassed",
+            "filePath": "/gltf/Engine_1.glb",
+            "plugName": "plug_engine"
+        }
+    ],
+    "HoverPads": [
+        {
+            "id": 0,
+            "name": "Full Circle",
+            "description": "The absolute Standard in soft hovering",
+            "filePath": "/gltf/Hoverpad_1.glb",
+            "plugName": "plug_hoverpad"
+        },
+        {
+            "id": 1,
+            "name": "The Slice",
+            "description": "Less refined - radical turns!",
+            "filePath": "/gltf/Hoverpad_2.glb",
+            "plugName": "plug_hoverpad"
+        }
+    ],
+    "Ornaments": [
+        {
+            "id": 0,
+            "name": "Star",
+            "description": "Pointy in a pinch",
+            "filePath": "/gltf/Ornament_Hood_1.glb",
+            "plugName": "plug_ornament"
+        }
+    ]
+}

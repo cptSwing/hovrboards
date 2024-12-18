@@ -1,20 +1,14 @@
+import Configure from './components/Configure';
 import Scene from './components/Scene';
-import { useZustand } from './zustand';
-
-const store_cycleBoards = useZustand.getState().methods.store_cycleBoards;
 
 const App = () => {
     return (
         <div className='relative size-full'>
             <Scene />
-            <div className='absolute bottom-4 left-1/2 -translate-x-1/2'>
-                <button
-                    onClick={() => {
-                        store_cycleBoards();
-                    }}
-                >
-                    Next Board
-                </button>
+            <div className='absolute right-0 top-0 h-full w-1/4 bg-slate-500/75'>
+                <div className='mx-auto w-4/5'>
+                    <Configure />
+                </div>
             </div>
         </div>
     );
