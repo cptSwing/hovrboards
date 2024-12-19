@@ -16,38 +16,25 @@ export const useZustand = create<ZustandStore>()(
         methods: {
             store_cycleBoards: (direction) => {
                 const currentSelection = get().state.selected;
-                const BE_boards = mockDb.Boards;
+                const boards = mockDb.Boards;
                 let following: number;
 
                 if (direction === 'next') {
-                    following = BE_boards[currentSelection.board + 1] ? currentSelection.board + 1 : 0;
+                    following = boards[currentSelection.board + 1] ? currentSelection.board + 1 : 0;
                 } else {
-                    following = BE_boards[currentSelection.board - 1] ? currentSelection.board - 1 : BE_boards.length - 1;
+                    following = boards[currentSelection.board - 1] ? currentSelection.board - 1 : boards.length - 1;
                 }
+
+                const newBoardSocketNames = mockDb.Boards[following].socketNames;
 
                 set((draftState) => {
-                    draftState.state.selected.board = following;
+                    draftState.state.selected = {
+                        ...currentSelection,
+                        board: following,
+                        hoverPads: modifiedArrayLength(currentSelection.hoverPads, newBoardSocketNames.hoverPads.length),
+                        ornaments: modifiedArrayLength(currentSelection.ornaments, newBoardSocketNames.ornaments.length),
+                    };
                 });
-
-                if (currentSelection.hoverPads.length !== BE_boards[following].socketNames.hoverPads.length) {
-                    const newArr = Array.from({ length: BE_boards[following].socketNames.hoverPads.length }).map((_, idx) =>
-                        currentSelection.hoverPads[idx] ? currentSelection.hoverPads[idx] : 0,
-                    );
-
-                    set((draftState) => {
-                        draftState.state.selected.hoverPads = newArr;
-                    });
-                }
-
-                if (currentSelection.ornaments.length !== BE_boards[following].socketNames.ornaments.length) {
-                    const newArr = Array.from({ length: BE_boards[following].socketNames.ornaments.length }).map((_, idx) =>
-                        currentSelection.ornaments[idx] ? currentSelection.ornaments[idx] : 0,
-                    );
-
-                    set((draftState) => {
-                        draftState.state.selected.ornaments = newArr;
-                    });
-                }
             },
 
             store_cycleEngines: (direction) => {
@@ -100,3 +87,15 @@ export const useZustand = create<ZustandStore>()(
         },
     })),
 );
+
+const modifiedArrayLength = (oldArr: number[], newLength: number) => {
+    if (oldArr.length === newLength) return oldArr;
+
+    let newArr: number[] = [];
+
+    for (let i = 0; i < newLength; i++) {
+        newArr.push(oldArr[i] ?? 0);
+    }
+
+    return newArr;
+};

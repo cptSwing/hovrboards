@@ -1,15 +1,11 @@
 import { useGLTF } from '@react-three/drei';
-import { FC, useEffect, useRef, useState } from 'react';
-import { Group, Mesh, Object3DEventMap } from 'three';
+import { FC, ReactNode, useRef, useState } from 'react';
+import { Group, Mesh, Object3DEventMap, Vector3 } from 'three';
 import useAssembleBoard from '../../hooks/useAssembleBoard';
+import { DB_BoardType } from '../../types/types';
 
 const HoverBoardAssembly: FC<{}> = ({}) => {
     const boardRef = useRef<Group<Object3DEventMap> | null>(null);
-
-    const { board, engine, hoverPads, ornaments } = useAssembleBoard();
-    useEffect(() => {
-        console.log('%c[HoverBoardAssembly]', 'color: #fb1613', `board, engine, hoverPads, ornaments :`, board, engine, hoverPads, ornaments);
-    }, [board, engine, hoverPads, ornaments]);
 
     const [groupPos, setGroupPos] = useState([0, 0, 0] as [x: number, y: number, z: number]);
     // useEffect(() => {
@@ -21,38 +17,43 @@ const HoverBoardAssembly: FC<{}> = ({}) => {
 
     return (
         <group position={groupPos}>
-            <BoardModel filePath={board.filePath} />
-            <AccessoryModel filePath={engine.filePath} />
-            {hoverPads.map((hoverPad, idx) => (
-                <AccessoryModel key={hoverPad.id + idx} filePath={hoverPad.filePath} />
-            ))}
-            {ornaments.map((ornament, idx) => (
-                <AccessoryModel key={ornament.id + idx} filePath={ornament.filePath} />
-            ))}
+            <BoardModel></BoardModel>
         </group>
     );
 };
 
 export default HoverBoardAssembly;
 
-const BoardModel = ({ filePath }: { filePath: string }) => {
-    const { scene } = useGLTF(filePath);
+const BoardModel = () => {
+    const { board, engine, hoverPads, ornaments } = useAssembleBoard();
 
-    return <primitive object={scene} />;
-};
-
-const AccessoryModel = ({ filePath }: { filePath: string }) => {
-    const { scene } = useGLTF(filePath);
-
-    let meshObject;
-
+    const { scene } = useGLTF(board.filePath);
+    let enginePos = new Vector3(0, 0, 0);
     scene.traverse((obj) => {
-        if ((obj as Mesh).isMesh) {
-            meshObject = obj;
-            return;
+        if (obj.name === board.socketNames.engine) {
+            enginePos = obj.position;
         }
     });
 
+    return (
+        <primitive object={scene}>
+            <AccessoryModel filePath={engine.filePath} socketPosition={enginePos} />
+
+            {hoverPads.map((hoverPad, idx) => (
+                <AccessoryModel key={hoverPad.id + idx} filePath={hoverPad.filePath} socketPosition={enginePos} />
+            ))}
+
+            {ornaments.map((ornament, idx) => (
+                <AccessoryModel key={ornament.id + idx} filePath={ornament.filePath} socketPosition={enginePos} />
+            ))}
+        </primitive>
+    );
+};
+
+const AccessoryModel = ({ filePath, socketPosition }: { filePath: string; socketPosition: Vector3 }) => {
+    const { scene } = useGLTF(filePath);
+    console.log('%c[HoverBoardAssembly]', 'color: #339e5a', `scene :`, scene);
+
     // return meshObject ? <primitive object={meshObject} /> : null;
-    return <primitive object={scene} />;
+    return <primitive object={scene} position={socketPosition} />;
 };
