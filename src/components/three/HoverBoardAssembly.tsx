@@ -1,11 +1,15 @@
-import { useGLTF } from '@react-three/drei';
-import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { Group, Mesh, Object3DEventMap, Vector3 } from 'three';
-import useAssembleBoard from '../../hooks/useAssembleBoard';
-import { DB_BoardType } from '../../types/types';
+import { FC, useRef, useState } from 'react';
+import { MathUtils } from 'three';
+import BoardChubber from './gltfJsx/BoardChubber';
+import PlugAccessory from './gltfJsx/PlugAccessory';
+import useBoardConfiguration from '../../hooks/useBoardConfiguration';
+import { SocketTransforms } from '../../types/types';
 
 const HoverBoardAssembly: FC<{}> = ({}) => {
-    const boardRef = useRef<Group<Object3DEventMap> | null>(null);
+    const socketPos_Ref = useRef<SocketTransforms | null>(null);
+    const { board, engine, hoverPads, ornaments } = useBoardConfiguration();
+
+    console.log('%c[HoverBoardAssembly]', 'color: #5aff4d', `board, engine, hoverPads, ornaments :`, board, engine, hoverPads, ornaments);
 
     const [groupPos, setGroupPos] = useState([0, 0, 0] as [x: number, y: number, z: number]);
     // useEffect(() => {
@@ -16,79 +20,30 @@ const HoverBoardAssembly: FC<{}> = ({}) => {
     // }, [board]);
 
     return (
-        <group position={groupPos}>
-            <BoardModel></BoardModel>
+        <group position={groupPos} rotation={[0, MathUtils.degToRad(90), 0]}>
+            <BoardChubber ref={socketPos_Ref} />
+
+            {socketPos_Ref.current && (
+                <>
+                    <PlugAccessory accessory={engine} socketPosition={socketPos_Ref.current.engine[0]} socketRotation={socketPos_Ref.current.engine[1]} />
+
+                    {hoverPads.map((hoverPad, idx) => {
+                        const socketPosition = socketPos_Ref.current.hoverPads[idx][0];
+                        const socketRotation = socketPos_Ref.current.hoverPads[idx][1];
+
+                        return <PlugAccessory key={hoverPad.id + idx} accessory={hoverPad} socketPosition={socketPosition} socketRotation={socketRotation} />;
+                    })}
+
+                    {ornaments.map((ornament, idx) => {
+                        const socketPosition = socketPos_Ref.current.ornaments[idx][0];
+                        const socketRotation = socketPos_Ref.current.ornaments[idx][1];
+
+                        return <PlugAccessory key={ornament.id + idx} accessory={ornament} socketPosition={socketPosition} socketRotation={socketRotation} />;
+                    })}
+                </>
+            )}
         </group>
     );
 };
 
 export default HoverBoardAssembly;
-
-const BoardModel = () => {
-    const { board, engine, hoverPads, ornaments } = useAssembleBoard();
-
-    const { scene } = useGLTF(board.filePath);
-
-    const socketPositions_Memo = useMemo(() => {
-        let enginePos = new Vector3(0, 0, 0);
-        let hoverPadsPos: { [key: string]: Vector3 }[] = [];
-        let ornamentsPos: { [key: string]: Vector3 }[] = [];
-
-        scene.traverse((obj) => {
-            console.log('%c[HoverBoardAssembly]', 'color: #ae2cd1', `obj.name :`, obj.name);
-
-            if (board.socketNames.engine === obj.name) {
-                enginePos = obj.position;
-            } else if (board.socketNames.hoverPads.includes(obj.name)) {
-                hoverPadsPos.push({ [obj.name]: obj.position });
-            } else if (board.socketNames.ornaments.includes(obj.name)) {
-                ornamentsPos.push({ [obj.name]: obj.position });
-            }
-        });
-
-        console.log('%c[HoverBoardAssembly]', 'color: #a7610c', `ornamentsPos,  :`, ornamentsPos);
-
-        return {
-            engine: enginePos,
-            hoverPads: hoverPadsPos,
-            ornaments: ornamentsPos,
-        };
-    }, [scene, board]);
-
-    return (
-        <primitive object={scene}>
-            <AccessoryModel filePath={engine.filePath} socketPosition={socketPositions_Memo.engine} />
-
-            {hoverPads.map((hoverPad, idx) => (
-                <AccessoryModel key={hoverPad.id + idx} filePath={hoverPad.filePath} socketPosition={Object.values(socketPositions_Memo.hoverPads[idx])[0]} />
-            ))}
-
-            {ornaments.map((ornament, idx) => {
-                return (
-                    <AccessoryModel
-                        key={ornament.id + idx}
-                        filePath={ornament.filePath}
-                        socketPosition={Object.values(socketPositions_Memo.hoverPads[idx])[0]}
-                    />
-                );
-            })}
-        </primitive>
-    );
-};
-
-// TODO result from useGLTF will need to be duplicated with scene.clone() or by sharing geometry etc.. or displaying several per scene not possible
-const nullTR = new Vector3(0, 0, 0);
-const AccessoryModel = ({ filePath, socketPosition }: { filePath: string; socketPosition: Vector3 }) => {
-    const { scene } = useGLTF(filePath);
-
-    // useEffect(() => {
-    //     scene.traverse((obj) => {
-    //         obj.position.copy(nullTR);
-    //         obj.rotation.set(nullTR.x, nullTR.y, nullTR.z);
-    //     });
-    // }, [scene]);
-
-    console.log('%c[HoverBoardAssembly]', 'color: #058f93', `filePath, socketPosition :`, filePath, socketPosition);
-
-    return <primitive object={scene} position={socketPosition} />;
-};

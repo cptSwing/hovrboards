@@ -1,3 +1,6 @@
+import { Euler, Object3D, Vector3 } from 'three';
+import { GLTF } from 'three-stdlib';
+
 export type DB_BoardType = {
     id: number;
     name: string;
@@ -10,7 +13,7 @@ export type DB_BoardType = {
     };
 };
 
-export type DB_EngineType = {
+export type DB_AccessoryType = {
     id: number;
     name: string;
     description: string;
@@ -18,15 +21,25 @@ export type DB_EngineType = {
     plugName: string;
 };
 
-export type DB_HoverPadType = DB_EngineType;
-
-export type DB_OrnamentType = DB_EngineType;
+export type DB_EngineType = DB_AccessoryType;
+export type DB_HoverPadType = DB_AccessoryType;
+export type DB_OrnamentType = DB_AccessoryType;
 
 export type DBType = {
     Boards: DB_BoardType[];
     Engines: DB_EngineType[];
     HoverPads: DB_HoverPadType[];
     Ornaments: DB_OrnamentType[];
+};
+
+type SocketPosRot = [Vector3, Euler];
+export type SocketTransforms = { engine: SocketPosRot; hoverPads: SocketPosRot[]; ornaments: SocketPosRot[] };
+
+export type GLTFResult = GLTF & {
+    nodes: {
+        [key: string]: Object3D;
+    };
+    materials: {};
 };
 
 export type ZustandStore = {

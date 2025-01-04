@@ -3,7 +3,7 @@ import mockDb from '../mockApi/mockDb.json';
 
 const { Boards, Engines, HoverPads, Ornaments } = mockDb;
 
-const useAssembleBoard = () => {
+const useBoardConfiguration = () => {
     const selectedBoardIndex = useZustand((store) => store.state.selected.board);
     const selectedBoard = Boards[selectedBoardIndex];
 
@@ -11,10 +11,10 @@ const useAssembleBoard = () => {
     const selectedEngine = Engines[selectedEngineIndex];
 
     const selectedHoverPadIndices = useZustand((store) => store.state.selected.hoverPads);
-    const selectedHoverPads = HoverPads.filter((_, idx) => selectedHoverPadIndices.includes(idx));
+    const selectedHoverPads = selectedHoverPadIndices.map((index) => HoverPads[index]);
 
     const selectedOrnamentIndices = useZustand((store) => store.state.selected.ornaments);
-    const selectedOrnaments = Ornaments.filter((_, idx) => selectedOrnamentIndices.includes(idx));
+    const selectedOrnaments = selectedOrnamentIndices.map((index) => Ornaments[index]);
 
     return {
         board: selectedBoard,
@@ -24,4 +24,4 @@ const useAssembleBoard = () => {
     };
 };
 
-export default useAssembleBoard;
+export default useBoardConfiguration;

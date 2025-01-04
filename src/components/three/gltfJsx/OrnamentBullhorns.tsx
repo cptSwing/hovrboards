@@ -15,7 +15,7 @@ type GLTFResult = GLTF & {
 };
 
 export function Model(props: JSX.IntrinsicElements['group']) {
-    const { nodes, materials } = useGLTF('/ornament_bullhorns.glb') as GLTFResult;
+    const { nodes, materials } = useGLTF('/gltf/ornament_bullhorns.glb') as GLTFResult;
     return (
         <group {...props} dispose={null}>
             <group name='plug_ornament' position={[0, 0.0148807, 0.4499564]} rotation={[Math.PI / 2, 0, 0]}>
@@ -33,4 +33,4 @@ export function Model(props: JSX.IntrinsicElements['group']) {
     );
 }
 
-useGLTF.preload('/ornament_bullhorns.glb');
+useGLTF.preload('/gltf/ornament_bullhorns.glb');

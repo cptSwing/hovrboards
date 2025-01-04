@@ -14,8 +14,8 @@ type GLTFResult = GLTF & {
     materials: {};
 };
 
-export function Model(props: JSX.IntrinsicElements['group']) {
-    const { nodes, materials } = useGLTF('/hoverpad_pow.glb') as GLTFResult;
+export function HoverPadPow(props: JSX.IntrinsicElements['group']) {
+    const { nodes, materials } = useGLTF('/gltf/hoverpad_pow.glb') as GLTFResult;
     return (
         <group {...props} dispose={null}>
             <group name='plug_hoverpad' position={[0, 0, -0.1473]} rotation={[-Math.PI / 2, 0, -Math.PI]}>
@@ -32,4 +32,4 @@ export function Model(props: JSX.IntrinsicElements['group']) {
     );
 }
 
-useGLTF.preload('/hoverpad_pow.glb');
+useGLTF.preload('/gltf/hoverpad_pow.glb');
