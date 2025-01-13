@@ -16,6 +16,7 @@ const useBoardConfiguration = () => {
     const selectedOrnamentIndices = useZustand((store) => store.state.selected.ornaments);
     const selectedOrnaments = selectedOrnamentIndices.map((index) => Ornaments[index]);
 
+    console.log('%c[useBoardConfiguration]', 'color: #819f2f', `selectedBoard :`, selectedBoard);
     return {
         board: selectedBoard,
         engine: selectedEngine,

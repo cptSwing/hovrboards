@@ -1,28 +1,19 @@
 import { FC, useMemo } from 'react';
 import { useGLTF } from '@react-three/drei';
-import { DB_AccessoryType, GLTFResult } from '../../../types/types';
-import { Euler, Vector3 } from 'three';
-import { getFirstMesh, getFirstPlug } from './BoardChubber';
+import { DB_AccessoryType, GLTFResult, SocketPosRot } from '../../../types/types';
+import { Mesh, Object3D } from 'three';
 
-// useGLTF.preload('/gltf/hoverpad_fullcircle.glb');
-
-const PlugAccessory: FC<{ accessory: DB_AccessoryType; socketPosition: Vector3; socketRotation: Euler }> = ({ accessory, socketPosition, socketRotation }) => {
+const PlugAccessory: FC<{ accessory: DB_AccessoryType; socket: SocketPosRot }> = ({ accessory, socket }) => {
     const { filePath, plugName } = accessory;
+    const [socketPosition, socketRotation] = socket;
     const { nodes } = useGLTF(filePath) as GLTFResult;
 
-    const [nodeMesh_Memo, plug_Memo] = useMemo(() => [getFirstMesh(nodes), getFirstPlug(nodes)], [nodes]);
+    const _test = 1;
 
-    console.log('%c[HoverPadFullCircle]', 'color: #0dfe2f', `filePath,  plugName, nodes, socketPosition :`, filePath, plugName, nodes, socketPosition);
+    const nodeMesh_Memo = useMemo(() => getFirstMesh(nodes), [nodes]);
 
     return nodeMesh_Memo ? (
-        <group
-            dispose={null}
-            name={plugName}
-            position={socketPosition}
-            rotation={plug_Memo.rotation}
-            // position={ [ 0, 0, -0.1473 ] }
-            // rotation={[-Math.PI / 2, 0, -Math.PI]}
-        >
+        <group dispose={null} name={plugName} position={socketPosition} rotation={socketRotation}>
             <mesh
                 name={`${plugName}_mesh`}
                 castShadow
@@ -31,7 +22,6 @@ const PlugAccessory: FC<{ accessory: DB_AccessoryType; socketPosition: Vector3; 
                 material={nodeMesh_Memo.material}
                 position={nodeMesh_Memo.position}
                 rotation={nodeMesh_Memo.rotation}
-                // rotation={[-Math.PI / 2, 0, Math.PI]}
             />
         </group>
     ) : (
@@ -39,4 +29,9 @@ const PlugAccessory: FC<{ accessory: DB_AccessoryType; socketPosition: Vector3; 
     );
 };
 
+console.log('%c[PlugAccessory]', 'color: #f69ac9', `ldkdd :`);
+
 export default PlugAccessory;
+
+const getFirstMesh = (nodes: GLTFResult['nodes']) => Object.values(nodes).find((node) => (node as Mesh).isMesh) as Mesh;
+const _getFirstPlug = (nodes: GLTFResult['nodes']) => Object.values(nodes).find((node) => node.name.includes('plug_')) as Object3D;

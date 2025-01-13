@@ -1,16 +1,16 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import { MathUtils } from 'three';
-import BoardChubber from './gltfJsx/BoardChubber';
 import PlugAccessory from './gltfJsx/PlugAccessory';
 import useBoardConfiguration from '../../hooks/useBoardConfiguration';
-import { SocketTransforms } from '../../types/types';
+import useBoardMeshAndSocket from '../../hooks/useBoardMeshAndSockets';
 
 const HoverBoardAssembly: FC<{}> = ({}) => {
-    const socketPos_Ref = useRef<SocketTransforms | null>(null);
     const { board, engine, hoverPads, ornaments } = useBoardConfiguration();
+    const test = 1;
 
-    console.log('%c[HoverBoardAssembly]', 'color: #5aff4d', `board, engine, hoverPads, ornaments :`, board, engine, hoverPads, ornaments);
+    const meshAndSockets = useBoardMeshAndSocket(board.filePath);
 
+    // TODO on board switch, move old to left and new in from right. Copy this component, then unmount?
     const [groupPos, setGroupPos] = useState([0, 0, 0] as [x: number, y: number, z: number]);
     // useEffect(() => {
     //     setGroupPos([-5, 0, 0]);
@@ -19,31 +19,28 @@ const HoverBoardAssembly: FC<{}> = ({}) => {
     //     }, 200);
     // }, [board]);
 
-    return (
-        <group position={groupPos} rotation={[0, MathUtils.degToRad(90), 0]}>
-            <BoardChubber ref={socketPos_Ref} />
+    if (!meshAndSockets) {
+        return null;
+    } else {
+        const { boardMesh, engineTransform, hoverPadTransforms, ornamentTransforms } = meshAndSockets;
+        return (
+            <group position={groupPos} rotation={[0, MathUtils.degToRad(90), 0]}>
+                <group position={boardMesh.position} dispose={null}>
+                    <mesh name={boardMesh.name} castShadow receiveShadow geometry={boardMesh.geometry} material={boardMesh.material} />
+                </group>
 
-            {socketPos_Ref.current && (
-                <>
-                    <PlugAccessory accessory={engine} socketPosition={socketPos_Ref.current.engine[0]} socketRotation={socketPos_Ref.current.engine[1]} />
+                <PlugAccessory accessory={engine} socket={engineTransform} />
 
-                    {hoverPads.map((hoverPad, idx) => {
-                        const socketPosition = socketPos_Ref.current.hoverPads[idx][0];
-                        const socketRotation = socketPos_Ref.current.hoverPads[idx][1];
+                {hoverPads.map((hoverPad, idx) => (
+                    <PlugAccessory key={idx} accessory={hoverPad} socket={hoverPadTransforms[idx]} />
+                ))}
 
-                        return <PlugAccessory key={hoverPad.id + idx} accessory={hoverPad} socketPosition={socketPosition} socketRotation={socketRotation} />;
-                    })}
-
-                    {ornaments.map((ornament, idx) => {
-                        const socketPosition = socketPos_Ref.current.ornaments[idx][0];
-                        const socketRotation = socketPos_Ref.current.ornaments[idx][1];
-
-                        return <PlugAccessory key={ornament.id + idx} accessory={ornament} socketPosition={socketPosition} socketRotation={socketRotation} />;
-                    })}
-                </>
-            )}
-        </group>
-    );
+                {ornaments.map((ornament, idx) => (
+                    <PlugAccessory key={idx} accessory={ornament} socket={ornamentTransforms[idx]} />
+                ))}
+            </group>
+        );
+    }
 };
 
 export default HoverBoardAssembly;

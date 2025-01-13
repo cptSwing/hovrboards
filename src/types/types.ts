@@ -32,8 +32,8 @@ export type DBType = {
     Ornaments: DB_OrnamentType[];
 };
 
-type SocketPosRot = [Vector3, Euler];
-export type SocketTransforms = { engine: SocketPosRot; hoverPads: SocketPosRot[]; ornaments: SocketPosRot[] };
+export type SocketPosRot = [Vector3, Euler];
+export type SocketTransforms = { engineTransform: SocketPosRot; hoverPadTransforms: SocketPosRot[]; ornamentTransforms: SocketPosRot[] };
 
 export type GLTFResult = GLTF & {
     nodes: {

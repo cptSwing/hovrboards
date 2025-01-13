@@ -15,6 +15,7 @@ const Scene = () => {
         >
             <PerspectiveCamera name='defaultCamera' makeDefault position={[0.5, 0.5, 1]} />
             <OrbitControls />
+
             <Float
                 speed={10} // Animation speed, defaults to 1
                 rotationIntensity={0} // XYZ rotation intensity, defaults to 1
@@ -35,5 +36,7 @@ const Scene = () => {
         </Canvas>
     );
 };
+
+// useGLTF.preload(filePath);
 
 export default Scene;
