@@ -63,6 +63,10 @@ export default [
             'react-hooks/rules-of-hooks': 'warn',
             'react-hooks/exhaustive-deps': 'warn',
 
+            // ...reactHooks.configs.recommended.rules,
+            'react-hooks/rules-of-hooks': 'warn',
+            'react-hooks/exhaustive-deps': 'warn',
+
             'react-refresh/only-export-components': ['warn', { allowConstantExport: false }],
         },
     },
