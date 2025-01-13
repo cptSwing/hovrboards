@@ -41,19 +41,28 @@ export default [
 
     {
         rules: {
-            ...reactHooks.configs.recommended.rules,
-            'object-shorthand': 'warn',
-            'no-console': 'warn',
             'prettier/prettier': 'error',
-            '@typescript-eslint/no-unused-vars': [
-                'warn',
+            'object-shorthand': 'warn',
+            'no-console': 'error',
+
+            // 'no-unused-vars': 'off',
+            'no-unused-vars': [
+                'error',
                 {
-                    argsIgnorePattern: '^_',
+                    args: 'all',
+                    argsIgnorePattern: '^_ignored',
+                    vars: 'all',
                     varsIgnorePattern: '^_ignored',
+                    caughtErrors: 'all',
+                    caughtErrorsIgnorePattern: '^_ignored',
+                    destructuredArrayIgnorePattern: '^_ignored',
                 },
             ],
-            // 'react-hooks/rules-of-hooks': 'warn',
-            // 'react-hooks/exhaustive-deps': 'warn',
+
+            // ...reactHooks.configs.recommended.rules,
+            'react-hooks/rules-of-hooks': 'warn',
+            'react-hooks/exhaustive-deps': 'warn',
+
             'react-refresh/only-export-components': ['warn', { allowConstantExport: false }],
         },
     },
