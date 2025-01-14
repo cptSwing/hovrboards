@@ -1,6 +1,6 @@
 import eslint from '@eslint/js';
 import globals from 'globals';
-import react from 'eslint-plugin-react';
+import react from 'eslint-plugin-react'; // move to eslint-react.xyz once eslint v9 compatable?
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
