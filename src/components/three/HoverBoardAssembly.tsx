@@ -4,14 +4,13 @@ import PlugAccessory from './gltfJsx/PlugAccessory';
 import useBoardConfiguration from '../../hooks/useBoardConfiguration';
 import useBoardMeshAndSocket from '../../hooks/useBoardMeshAndSockets';
 
-const HoverBoardAssembly: FC<{}> = ({}) => {
+const HoverBoardAssembly: FC = () => {
     const { board, engine, hoverPads, ornaments } = useBoardConfiguration();
-    const test = 1;
 
     const meshAndSockets = useBoardMeshAndSocket(board.filePath);
 
     // TODO on board switch, move old to left and new in from right. Copy this component, then unmount?
-    const [groupPos, setGroupPos] = useState([0, 0, 0] as [x: number, y: number, z: number]);
+    const [groupPos, _setGroupPos] = useState([0, 0, 0] as [x: number, y: number, z: number]);
     // useEffect(() => {
     //     setGroupPos([-5, 0, 0]);
     //     const timer = setTimeout(() => {

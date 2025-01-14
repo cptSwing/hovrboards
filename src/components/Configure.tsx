@@ -6,7 +6,7 @@ import mockDb from '../mockApi/mockDb.json';
 
 const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycleOrnaments } = useZustand.getState().methods;
 
-const Configure: FC<{}> = ({}) => {
+const Configure: FC = () => {
     const [menuOpen, setMenuOpen] = useState([true, false, false, false]);
 
     return (

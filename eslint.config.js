@@ -4,13 +4,18 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
+import reactThree from '@react-three/eslint-plugin';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-    { ignores: ['dist'] },
-
+    eslint.configs.recommended,
+    ...tseslint.configs.recommendedTypeChecked,
+    react.configs.flat.recommended,
+    react.configs.flat['jsx-runtime'],
+    reactRefresh.configs.recommended,
     {
+        ignores: ['dist'],
         files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
         settings: {
             react: {
@@ -19,35 +24,24 @@ export default [
         },
         languageOptions: {
             globals: globals.browser,
+            parserOptions: {
+                project: ['tsconfig.node.json', 'tsconfig.app.json'],
+                // project: ['./tsconfig.json'],
+                tsconfigRootDir: import.meta.dirname,
+            },
         },
-        parserOptions: {
-            project: ['./tsconfig.node.json', './tsconfig.app.json'],
-            tsconfigRootDir: import.meta.dirname,
-        },
-    },
-
-    eslint.configs.recommended,
-    ...tseslint.configs.recommendedTypeChecked,
-    react.configs.flat.recommended,
-    react.configs.flat['jsx-runtime'],
-    reactRefresh.configs.recommended,
-    eslintPluginPrettierRecommended,
-
-    {
         plugins: {
             'react-hooks': reactHooks,
+            'react-three': reactThree,
         },
-    },
-
-    {
         rules: {
-            'prettier/prettier': 'error',
             'object-shorthand': 'warn',
-            'no-console': 'error',
-
+            'no-console': 'warn',
             'no-unused-vars': 'off',
-            'no-unused-vars': [
-                'error',
+
+            'prettier/prettier': 'error',
+            '@typescript-eslint/no-unused-vars': [
+                'warn',
                 {
                     args: 'all',
                     argsIgnorePattern: '^_',
@@ -59,15 +53,40 @@ export default [
                 },
             ],
 
-            // ...reactHooks.configs.recommended.rules,
-            'react-hooks/rules-of-hooks': 'warn',
-            'react-hooks/exhaustive-deps': 'warn',
+            'react/no-unknown-property': 'off',
 
-            // ...reactHooks.configs.recommended.rules,
             'react-hooks/rules-of-hooks': 'warn',
             'react-hooks/exhaustive-deps': 'warn',
 
             'react-refresh/only-export-components': ['warn', { allowConstantExport: false }],
         },
     },
+    // {
+    //     rules: {
+    //         'prettier/prettier': 'error',
+    //         '@typescript-eslint/no-unused-vars': [
+    //             'error',
+    //             {
+    //                 args: 'all',
+    //                 argsIgnorePattern: '^_',
+    //                 vars: 'all',
+    //                 varsIgnorePattern: '^_',
+    //                 caughtErrors: 'all',
+    //                 caughtErrorsIgnorePattern: '^_',
+    //                 destructuredArrayIgnorePattern: '^_',
+    //             },
+    //         ],
+
+    //         // ...reactHooks.configs.recommended.rules,
+    //         'react-hooks/rules-of-hooks': 'warn',
+    //         'react-hooks/exhaustive-deps': 'warn',
+
+    //         // ...reactHooks.configs.recommended.rules,
+    //         'react-hooks/rules-of-hooks': 'warn',
+    //         'react-hooks/exhaustive-deps': 'warn',
+
+    //         'react-refresh/only-export-components': ['warn', { allowConstantExport: false }],
+    //     },
+    // },
+    eslintPluginPrettierRecommended, // Must be last
 ];
