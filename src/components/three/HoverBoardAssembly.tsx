@@ -1,12 +1,13 @@
 import { FC, useState } from 'react';
-import { MathUtils } from 'three';
+import { MathUtils, Mesh } from 'three';
 import PlugAccessory from './gltfJsx/PlugAccessory';
 import useBoardConfiguration from '../../hooks/useBoardConfiguration';
 import useBoardMeshAndSocket from '../../hooks/useBoardMeshAndSockets';
+import { MeshStandardMaterialProps } from '@react-three/fiber';
+import { DB_BoardType } from '../../types/types';
 
 const HoverBoardAssembly: FC = () => {
     const { board, engine, hoverPads, ornaments } = useBoardConfiguration();
-
     const meshAndSockets = useBoardMeshAndSocket(board.filePath);
 
     // TODO on board switch, move old to left and new in from right. Copy this component, then unmount?
@@ -22,20 +23,19 @@ const HoverBoardAssembly: FC = () => {
         return null;
     } else {
         const { boardMesh, engineTransform, hoverPadTransforms, ornamentTransforms } = meshAndSockets;
+
         return (
             <group position={groupPos} rotation={[0, MathUtils.degToRad(90), 0]}>
-                <group position={boardMesh.position} dispose={null}>
-                    <mesh name={boardMesh.name} castShadow receiveShadow geometry={boardMesh.geometry} material={boardMesh.material} />
-                </group>
+                <Board dbData={board} mesh={boardMesh} />
 
-                <PlugAccessory accessory={engine} socket={engineTransform} />
+                <PlugAccessory dbData={engine} socket={engineTransform} />
 
                 {hoverPads.map((hoverPad, idx) => (
-                    <PlugAccessory key={idx} accessory={hoverPad} socket={hoverPadTransforms[idx]} />
+                    <PlugAccessory key={idx} dbData={hoverPad} socket={hoverPadTransforms[idx]} />
                 ))}
 
                 {ornaments.map((ornament, idx) => (
-                    <PlugAccessory key={idx} accessory={ornament} socket={ornamentTransforms[idx]} />
+                    <PlugAccessory key={idx} dbData={ornament} socket={ornamentTransforms[idx]} />
                 ))}
             </group>
         );
@@ -43,3 +43,16 @@ const HoverBoardAssembly: FC = () => {
 };
 
 export default HoverBoardAssembly;
+
+const Board: FC<{ dbData: DB_BoardType; mesh: Mesh }> = ({ dbData, mesh }) => {
+    const { name, position, geometry, material } = mesh;
+    const { hexColor } = dbData;
+
+    return (
+        <group position={position} dispose={null}>
+            <mesh name={name} castShadow receiveShadow geometry={geometry}>
+                <meshStandardMaterial {...(material as MeshStandardMaterialProps)} color={hexColor} />
+            </mesh>
+        </group>
+    );
+};

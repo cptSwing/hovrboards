@@ -1,11 +1,15 @@
-import { Euler, Object3D, Vector3 } from 'three';
+import { BufferGeometry, Euler, Material, Mesh, Object3D, Vector3 } from 'three';
 import { GLTF } from 'three-stdlib';
 
-export type DB_BoardType = {
-    id: number;
+export type DB_CommonType = {
+    id: number; // WARN in SQL database this needs to correspond to array index
     name: string;
     description: string;
     filePath: string;
+    hexColor: string;
+};
+
+export type DB_BoardType = DB_CommonType & {
     socketNames: {
         engine: string;
         hoverPads: string[];
@@ -13,11 +17,7 @@ export type DB_BoardType = {
     };
 };
 
-export type DB_AccessoryType = {
-    id: number;
-    name: string;
-    description: string;
-    filePath: string;
+export type DB_AccessoryType = DB_CommonType & {
     plugName: string;
 };
 
@@ -35,26 +35,30 @@ export type DBType = {
 export type SocketPosRot = [Vector3, Euler];
 export type SocketTransforms = { engineTransform: SocketPosRot; hoverPadTransforms: SocketPosRot[]; ornamentTransforms: SocketPosRot[] };
 
+//TODO for later
+export type MeshExtended = Mesh<BufferGeometry, Material[]>;
+
 export type GLTFResult = GLTF & {
     nodes: {
         [key: string]: Object3D;
     };
-    materials: {};
+    materials: { [key: string]: Material };
 };
 
 export type ZustandStore = {
     state: {
         selected: {
-            board: DB_BoardType['id'];
-            engine: DB_EngineType['id'];
-            hoverPads: DB_HoverPadType['id'][];
-            ornaments: DB_OrnamentType['id'][];
+            board: DB_BoardType;
+            engine: DB_EngineType;
+            hoverPads: DB_HoverPadType[];
+            ornaments: DB_OrnamentType[];
         };
     };
     methods: {
         store_cycleBoards: (direction: 'next' | 'prev') => void;
         store_cycleEngines: (direction: 'next' | 'prev') => void;
-        store_cycleHoverPads: (position: number, direction: 'next' | 'prev') => void;
-        store_cycleOrnaments: (position: number, direction: 'next' | 'prev') => void;
+        store_cycleHoverPads: (direction: 'next' | 'prev', position: number) => void;
+        store_cycleOrnaments: (direction: 'next' | 'prev', position: number) => void;
+        store_setHexColor: (hexColor: string, category: keyof ZustandStore['state']['selected'], position?: number) => void;
     };
 };

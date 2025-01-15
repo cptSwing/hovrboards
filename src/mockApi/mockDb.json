@@ -5,6 +5,7 @@
             "name": "Ol' Regular",
             "description": "Your run of the mill Hoverboard, a tried and true classic!",
             "filePath": "/gltf/board_regular.glb",
+            "hexColor": "#eedf2d",
             "socketNames": {
                 "engine": "socket_engine",
                 "hoverPads": ["socket_hoverpad_1", "socket_hoverpad_2"],
@@ -16,6 +17,7 @@
             "name": "The Chubber",
             "description": "This boards' love handles allow more variety in feet placement!",
             "filePath": "/gltf/board_chubber.glb",
+            "hexColor": "#bbecdf",
             "socketNames": {
                 "engine": "socket_engine",
                 "hoverPads": ["socket_hoverpad_1", "socket_hoverpad_2"],
@@ -29,6 +31,7 @@
             "name": "OVR9000",
             "description": "Copied often, seldom surpassed",
             "filePath": "/gltf/engine_ovr.glb",
+            "hexColor": "#dc6ac4",
             "plugName": "plug_engine"
         }
     ],
@@ -38,6 +41,7 @@
             "name": "Full Circle",
             "description": "The absolute Standard in soft hovering",
             "filePath": "/gltf/hoverpad_fullcircle.glb",
+            "hexColor": "#47c2d1",
             "plugName": "plug_hoverpad"
         },
         {
@@ -45,6 +49,7 @@
             "name": "The Slice",
             "description": "Less refined - radical turns!",
             "filePath": "/gltf/hoverpad_theslice.glb",
+            "hexColor": "#b08f3f",
             "plugName": "plug_hoverpad"
         },
         {
@@ -52,6 +57,7 @@
             "name": "Pow",
             "description": "You got it - pow()!",
             "filePath": "/gltf/hoverpad_pow.glb",
+            "hexColor": "#ccf5f7",
             "plugName": "plug_hoverpad"
         }
     ],
@@ -61,6 +67,7 @@
             "name": "Bullhorns",
             "description": "Clear (and poke) obstacles on your route!",
             "filePath": "/gltf/ornament_bullhorns.glb",
+            "hexColor": "#4a18b9",
             "plugName": "plug_ornament"
         },
         {
@@ -68,6 +75,7 @@
             "name": "Star",
             "description": "Pointy in a pinch",
             "filePath": "/gltf/ornament_star.glb",
+            "hexColor": "#cfb173",
             "plugName": "plug_ornament"
         }
     ]

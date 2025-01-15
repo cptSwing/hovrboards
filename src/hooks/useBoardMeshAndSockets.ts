@@ -35,8 +35,8 @@ const useBoardMeshAndSocket = (boardFilePath: DB_BoardType['filePath']) => {
                 ornamentTemp.sort(([aName], [bName]) => (aName < bName ? -1 : aName > bName ? 1 : 0));
 
                 const engineTransform = engineTemp as [Vector3, Euler];
-                const hoverPadTransforms = hoverPadTemp.map(([_, vec3, euler]) => [vec3, euler]) as [Vector3, Euler][];
-                const ornamentTransforms = ornamentTemp.map(([_, vec3, euler]) => [vec3, euler]) as [Vector3, Euler][];
+                const hoverPadTransforms: [Vector3, Euler][] = hoverPadTemp.map(([_, vec3, euler]) => [vec3, euler]);
+                const ornamentTransforms: [Vector3, Euler][] = ornamentTemp.map(([_, vec3, euler]) => [vec3, euler]);
 
                 if (engineTransform.length && hoverPadTransforms.length && ornamentTransforms.length) {
                     return {
