@@ -27,11 +27,11 @@ const ConfigureSingleItem: FC<{
     const inputId = `configure-board-title-${category}`;
 
     return (
-        <div className='w-full'>
+        <div>
             <input name='configure-board-titles' id={inputId} type='radio' className='peer hidden' defaultChecked={category === 'board'} />
             <label
                 htmlFor={inputId}
-                className='flex w-full cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
+                className='flex cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
             >
                 <div className='capitalize'>{category}:</div>
                 <ChevronDownIcon className='h-5 rotate-[calc(90deg*var(--unchecked))] transition-transform' />
@@ -52,11 +52,11 @@ const ConfigureMultipleItems: FC<{
     const inputId = `configure-board-title-${category}`;
 
     return (
-        <div className='w-full'>
+        <div>
             <input name='configure-board-titles' id={inputId} type='radio' className='peer hidden' defaultChecked={category === 'board'} />
             <label
                 htmlFor={inputId}
-                className='flex w-full cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
+                className='flex cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
             >
                 <div className='capitalize'>{category}:</div>
                 <ChevronDownIcon className='h-5 rotate-[calc(90deg*var(--unchecked))] transition-transform' />
