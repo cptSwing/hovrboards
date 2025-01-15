@@ -1,18 +1,13 @@
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Backdrop, Environment, Float, OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import HoverBoardAssembly from './three/HoverBoardAssembly';
 import { Color } from 'three';
+import { useZustand } from '../zustand';
+import { useEffect } from 'react';
 
 const Scene = () => {
     return (
-        <Canvas
-            shadows={true}
-            color='gray'
-            gl={{ alpha: false, antialias: true }}
-            onCreated={({ scene }) => {
-                scene.background = new Color('gray');
-            }}
-        >
+        <Canvas shadows={true} gl={{ alpha: false, antialias: true }}>
             <PerspectiveCamera name='defaultCamera' makeDefault position={[0.5, 0.5, 1]} />
             <OrbitControls />
 
@@ -26,13 +21,10 @@ const Scene = () => {
             </Float>
 
             <directionalLight castShadow position={[-1, 1, 1]} />
-            <Backdrop position={[0, -0.1, 0]} scale={[2, 1, 1]} receiveShadow>
-                <meshStandardMaterial color='#353540' />
-            </Backdrop>
 
             <axesHelper />
 
-            <Environment preset='city' />
+            <Background />
         </Canvas>
     );
 };
@@ -40,3 +32,22 @@ const Scene = () => {
 // useGLTF.preload(filePath);
 
 export default Scene;
+
+const Background = () => {
+    const { preset, isVisible, color, showBackdrop } = useZustand((state) => state.settings.background);
+    const scene = useThree((state) => state.scene);
+
+    useEffect(() => {
+        scene.background = new Color(color);
+    }, [scene, color]);
+
+    return (
+        <>
+            <Backdrop position={[0, -0.1, 0]} scale={[2, 1, 1]} receiveShadow visible={showBackdrop}>
+                <meshStandardMaterial color='#353540' />
+            </Backdrop>
+
+            <Environment preset={preset} background={isVisible} />
+        </>
+    );
+};

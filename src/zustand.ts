@@ -5,17 +5,25 @@ import mockDb from './mockApi/mockDb.json';
 
 export const useZustand = create<ZustandStore>()(
     immer((set, get) => ({
-        state: {
-            selected: {
-                board: mockDb['Boards'][0],
-                engine: mockDb['Engines'][0],
-                hoverPads: mockDb['Boards'][0].socketNames.hoverPads.map((_, idx) => mockDb['HoverPads'][idx]),
-                ornaments: mockDb['Boards'][0].socketNames.ornaments.map((_, idx) => mockDb['Ornaments'][idx]),
+        selected: {
+            board: mockDb['Boards'][0],
+            engine: mockDb['Engines'][0],
+            hoverPads: mockDb['Boards'][0].socketNames.hoverPads.map((_, idx) => mockDb['HoverPads'][idx]),
+            ornaments: mockDb['Boards'][0].socketNames.ornaments.map((_, idx) => mockDb['Ornaments'][idx]),
+        },
+
+        settings: {
+            background: {
+                preset: 'city',
+                isVisible: false,
+                color: '#808080',
+                showBackdrop: true,
             },
         },
+
         methods: {
             store_cycleBoards: (direction) => {
-                const currentSelection = get().state.selected;
+                const currentSelection = get().selected;
                 const currentBoardIndex = currentSelection.board.id;
                 const dbBoards = mockDb.Boards;
                 let following: number;
@@ -31,7 +39,7 @@ export const useZustand = create<ZustandStore>()(
                 const newOrnaments = modifiedArrayLength(currentSelection.ornaments, newBoard.socketNames.ornaments.length);
 
                 set((draftState) => {
-                    draftState.state.selected = {
+                    draftState.selected = {
                         board: newBoard,
                         engine: currentSelection.engine,
                         hoverPads: newHoverPads,
@@ -41,7 +49,7 @@ export const useZustand = create<ZustandStore>()(
             },
 
             store_cycleEngines: (direction) => {
-                const currentIndex = get().state.selected.engine.id;
+                const currentIndex = get().selected.engine.id;
                 const dbEngines = mockDb.Engines;
                 let following: number;
 
@@ -52,12 +60,12 @@ export const useZustand = create<ZustandStore>()(
                 }
 
                 set((draftState) => {
-                    draftState.state.selected.engine = dbEngines[following];
+                    draftState.selected.engine = dbEngines[following];
                 });
             },
 
             store_cycleHoverPads: (direction, position) => {
-                const currentIndex = get().state.selected.hoverPads[position].id;
+                const currentIndex = get().selected.hoverPads[position].id;
                 const dbHoverPads = mockDb.HoverPads;
                 let following: number;
 
@@ -68,12 +76,12 @@ export const useZustand = create<ZustandStore>()(
                 }
 
                 set((draftState) => {
-                    draftState.state.selected.hoverPads[position] = dbHoverPads[following];
+                    draftState.selected.hoverPads[position] = dbHoverPads[following];
                 });
             },
 
             store_cycleOrnaments: (direction, position) => {
-                const currentIndex = get().state.selected.ornaments[position].id;
+                const currentIndex = get().selected.ornaments[position].id;
                 const dbOrnaments = mockDb.Ornaments;
                 let following: number;
 
@@ -84,17 +92,30 @@ export const useZustand = create<ZustandStore>()(
                 }
 
                 set((draftState) => {
-                    draftState.state.selected.ornaments[position] = dbOrnaments[following];
+                    draftState.selected.ornaments[position] = dbOrnaments[following];
                 });
             },
 
             store_setHexColor: (hexColor, category, position) => {
                 set((draftState) => {
                     if (typeof position === 'number') {
-                        (draftState.state.selected[category] as DB_CommonType[])[position].hexColor = hexColor;
+                        (draftState.selected[category] as DB_CommonType[])[position].hexColor = hexColor;
                     } else {
-                        (draftState.state.selected[category] as DB_CommonType).hexColor = hexColor;
+                        (draftState.selected[category] as DB_CommonType).hexColor = hexColor;
                     }
+                });
+            },
+
+            store_setBackgroundSettings: ({ color, preset, isVisible, showBackdrop }) => {
+                const current = get().settings.background;
+                set((draftState) => {
+                    draftState.settings.background = {
+                        ...current,
+                        ...(color && { color }),
+                        ...(preset && { preset }),
+                        ...(!(typeof isVisible === 'undefined') && { isVisible }),
+                        ...(!(typeof showBackdrop === 'undefined') && { showBackdrop }),
+                    };
                 });
             },
         },

@@ -1,3 +1,4 @@
+import { PresetsType } from '@react-three/drei/helpers/environment-assets';
 import { BufferGeometry, Euler, Material, Mesh, Object3D, Vector3 } from 'three';
 import { GLTF } from 'three-stdlib';
 
@@ -46,19 +47,28 @@ export type GLTFResult = GLTF & {
 };
 
 export type ZustandStore = {
-    state: {
-        selected: {
-            board: DB_BoardType;
-            engine: DB_EngineType;
-            hoverPads: DB_HoverPadType[];
-            ornaments: DB_OrnamentType[];
+    selected: {
+        board: DB_BoardType;
+        engine: DB_EngineType;
+        hoverPads: DB_HoverPadType[];
+        ornaments: DB_OrnamentType[];
+    };
+
+    settings: {
+        background: {
+            preset: PresetsType;
+            isVisible: boolean;
+            color: string;
+            showBackdrop: boolean;
         };
     };
+
     methods: {
         store_cycleBoards: (direction: 'next' | 'prev') => void;
         store_cycleEngines: (direction: 'next' | 'prev') => void;
         store_cycleHoverPads: (direction: 'next' | 'prev', position: number) => void;
         store_cycleOrnaments: (direction: 'next' | 'prev', position: number) => void;
-        store_setHexColor: (hexColor: string, category: keyof ZustandStore['state']['selected'], position?: number) => void;
+        store_setHexColor: (hexColor: string, category: keyof ZustandStore['selected'], position?: number) => void;
+        store_setBackgroundSettings: ({ color, preset, isVisible, showBackdrop }: Partial<ZustandStore['settings']['background']>) => void;
     };
 };

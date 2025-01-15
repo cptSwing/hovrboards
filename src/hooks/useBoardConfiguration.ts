@@ -1,10 +1,10 @@
 import { useZustand } from '../zustand';
 
 const useBoardConfiguration = () => {
-    const selectedBoard = useZustand((store) => store.state.selected.board);
-    const selectedEngine = useZustand((store) => store.state.selected.engine);
-    const selectedHoverPads = useZustand((store) => store.state.selected.hoverPads);
-    const selectedOrnaments = useZustand((store) => store.state.selected.ornaments);
+    const selectedBoard = useZustand((store) => store.selected.board);
+    const selectedEngine = useZustand((store) => store.selected.engine);
+    const selectedHoverPads = useZustand((store) => store.selected.hoverPads);
+    const selectedOrnaments = useZustand((store) => store.selected.ornaments);
 
     return {
         board: selectedBoard,
