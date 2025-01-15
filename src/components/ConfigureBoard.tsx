@@ -3,8 +3,10 @@ import { useZustand } from '../zustand';
 import { ArrowLeftCircleIcon, ArrowRightCircleIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 import { DB_CommonType, ZustandStore } from '../types/types';
 import ConfigureColor from './ConfigureColor';
+import { cameraPositions } from '../sceneConstants';
 
-const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycleOrnaments, store_setHexColor } = useZustand.getState().methods;
+const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycleOrnaments, store_setHexColor, store_setCameraPosition } =
+    useZustand.getState().methods;
 
 const ConfigureBoard: FC = () => {
     return (
@@ -28,7 +30,18 @@ const ConfigureSingleItem: FC<{
 
     return (
         <div>
-            <input name='configure-board-titles' id={inputId} type='radio' className='peer hidden' defaultChecked={category === 'board'} />
+            <input
+                name='configure-board-titles'
+                id={inputId}
+                type='radio'
+                className='peer hidden'
+                defaultChecked={category === 'board'}
+                onChange={(ev) => {
+                    if (ev.target.checked) {
+                        store_setCameraPosition(cameraPositions[category]);
+                    }
+                }}
+            />
             <label
                 htmlFor={inputId}
                 className='flex cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'

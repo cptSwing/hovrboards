@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { DB_CommonType, ZustandStore } from './types/types';
 import mockDb from './mockApi/mockDb.json';
+import { cameraPositions } from './sceneConstants';
 
 export const useZustand = create<ZustandStore>()(
     immer((set, get) => ({
@@ -19,6 +20,10 @@ export const useZustand = create<ZustandStore>()(
                 color: '#808080',
                 showBackdrop: true,
             },
+        },
+
+        scene: {
+            cameraFocus: cameraPositions.board,
         },
 
         methods: {
@@ -117,6 +122,10 @@ export const useZustand = create<ZustandStore>()(
                         ...(!(typeof showBackdrop === 'undefined') && { showBackdrop }),
                     };
                 });
+            },
+
+            store_setCameraPosition: (position) => {
+                set((draftState) => draftState.scene.cameraFocus.set(position.x, position.y, position.z));
             },
         },
     })),

@@ -54,6 +54,10 @@ export type ZustandStore = {
         ornaments: DB_OrnamentType[];
     };
 
+    scene: {
+        cameraFocus: Vector3;
+    };
+
     settings: {
         background: {
             preset: PresetsType;
@@ -70,5 +74,6 @@ export type ZustandStore = {
         store_cycleOrnaments: (direction: 'next' | 'prev', position: number) => void;
         store_setHexColor: (hexColor: string, category: keyof ZustandStore['selected'], position?: number) => void;
         store_setBackgroundSettings: ({ color, preset, isVisible, showBackdrop }: Partial<ZustandStore['settings']['background']>) => void;
+        store_setCameraPosition: (position: Vector3) => void;
     };
 };
