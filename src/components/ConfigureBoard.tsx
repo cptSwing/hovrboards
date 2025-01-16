@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { useZustand } from '../zustand';
-import { ArrowLeftCircleIcon, ArrowRightCircleIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from '@heroicons/react/24/solid';
 import { DB_CommonType, ZustandStore } from '../types/types';
 import ConfigureColor from './ConfigureColor';
-import { cameraPositions } from '../sceneConstants';
+import { ConfigurationCard } from './ConfigurationCard';
 
 const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycleOrnaments, store_setHexColor, store_setCameraPosition } =
     useZustand.getState().methods;
@@ -29,27 +29,9 @@ const ConfigureSingleItem: FC<{
     const inputId = `configure-board-title-${category}`;
 
     return (
-        <div>
-            <input
-                name='configure-board-titles'
-                id={inputId}
-                type='radio'
-                className='peer hidden'
-                defaultChecked={category === 'board'}
-                onChange={(ev) => ev.target.checked && store_setCameraPosition(category)}
-            />
-            <label
-                htmlFor={inputId}
-                className='flex cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
-            >
-                <div className='capitalize'>{category}:</div>
-                <ChevronDownIcon className='h-5 rotate-[calc(90deg*var(--unchecked))] transition-transform' />
-            </label>
-
-            <div className='flex h-0 flex-col items-center justify-start overflow-hidden rounded-b-md bg-gray-600 p-0 opacity-10 transition-opacity duration-500 peer-checked:h-full peer-checked:p-2 peer-checked:opacity-100'>
-                <Item category={category} item={dbItem} handleCyclingClick={handleCyclingClick} />
-            </div>
-        </div>
+        <ConfigurationCard title={category} inputId={inputId} defaultChecked={category === 'board'} handleChecked={() => store_setCameraPosition(category)}>
+            <BoardItem category={category} item={dbItem} handleCyclingClick={handleCyclingClick} />
+        </ConfigurationCard>
     );
 };
 
@@ -61,26 +43,10 @@ const ConfigureMultipleItems: FC<{
     const inputId = `configure-board-title-${category}`;
 
     return (
-        <div>
-            <input
-                name='configure-board-titles'
-                id={inputId}
-                type='radio'
-                className='peer hidden'
-                defaultChecked={category === 'board'}
-                onChange={(ev) => ev.target.checked && store_setCameraPosition(category)}
-            />
-            <label
-                htmlFor={inputId}
-                className='flex cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
-            >
-                <div className='capitalize'>{category}:</div>
-                <ChevronDownIcon className='h-5 rotate-[calc(90deg*var(--unchecked))] transition-transform' />
-            </label>
-
-            <div className='flex h-0 flex-col items-center justify-start overflow-hidden rounded-b-md bg-gray-600 p-0 opacity-10 transition-opacity duration-500 peer-checked:h-full peer-checked:p-2 peer-checked:opacity-100'>
+        <ConfigurationCard title={category} inputId={inputId} defaultChecked={category === 'board'} handleChecked={() => store_setCameraPosition(category)}>
+            <>
                 {dbItems.map((dbItem, idx) => (
-                    <Item
+                    <BoardItem
                         key={category + idx}
                         category={category}
                         item={dbItem}
@@ -88,12 +54,12 @@ const ConfigureMultipleItems: FC<{
                         position={idx}
                     />
                 ))}
-            </div>
-        </div>
+            </>
+        </ConfigurationCard>
     );
 };
 
-const Item: FC<{
+const BoardItem: FC<{
     category: keyof ZustandStore['selected'];
     item: DB_CommonType;
     position?: number;
@@ -119,7 +85,7 @@ const Item: FC<{
                 />
             </div>
 
-            <div className='my-[--margin]'>{description}</div>
+            <div>{description}</div>
 
             <ConfigureColor
                 hexColor={hexColor}

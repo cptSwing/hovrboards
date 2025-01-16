@@ -10,10 +10,6 @@ const lookAtSceneRoot = new Vector3(0, 0, 0);
 const Scene = () => {
     const cameraPosition = useZustand((store) => store.scene.cameraPosition);
 
-    useEffect(() => {
-        console.log('%c[Scene]', 'color: #c4c1cb', `cameraPosition :`, cameraPosition);
-    }, [cameraPosition]);
-
     return (
         <Canvas shadows={true} gl={{ alpha: false, antialias: true }}>
             <PerspectiveCamera
@@ -25,12 +21,7 @@ const Scene = () => {
                 }}
             />
 
-            <Float
-                speed={10} // Animation speed, defaults to 1
-                rotationIntensity={0} // XYZ rotation intensity, defaults to 1
-                floatIntensity={1} // Up/down float intensity, works like a multiplier with floatingRange,defaults to 1
-                floatingRange={[-0.01, 0.01]} // Range of y-axis values the object will float within, defaults to [-0.1,0.1]
-            >
+            <Float speed={10} rotationIntensity={0} floatIntensity={1} floatingRange={[-0.01, 0.01]}>
                 <HoverBoardAssembly />
             </Float>
 
