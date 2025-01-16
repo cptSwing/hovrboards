@@ -2,15 +2,16 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { DB_CommonType, ZustandStore } from './types/types';
 import mockDb from './mockApi/mockDb.json';
-import { cameraPositions } from './sceneConstants';
+import { cameraPositions, sceneRoot } from './sceneConstants';
+import { Vector3 } from 'three';
 
 export const useZustand = create<ZustandStore>()(
     immer((set, get) => ({
         selected: {
-            board: mockDb['Boards'][0],
-            engine: mockDb['Engines'][0],
-            hoverPads: mockDb['Boards'][0].socketNames.hoverPads.map((_, idx) => mockDb['HoverPads'][idx]),
-            ornaments: mockDb['Boards'][0].socketNames.ornaments.map((_, idx) => mockDb['Ornaments'][idx]),
+            board: { ...mockDb['Boards'][0], positionVector: sceneRoot },
+            engine: { ...mockDb['Engines'][0], positionVector: sceneRoot },
+            hoverPads: mockDb['Boards'][0].socketNames.hoverPads.map((_, idx) => ({ ...mockDb['HoverPads'][idx], positionVector: sceneRoot })),
+            ornaments: mockDb['Boards'][0].socketNames.ornaments.map((_, idx) => ({ ...mockDb['Ornaments'][idx], positionVector: sceneRoot })),
         },
 
         settings: {
@@ -22,11 +23,30 @@ export const useZustand = create<ZustandStore>()(
             },
         },
 
-        scene: {
-            cameraPosition: cameraPositions.board,
+        camera: {
+            position: cameraPositions.board,
+            lookAt: new Vector3(1, -1, 1),
         },
 
         methods: {
+            store_setPositionVector: (category, vector, position) => {
+                set((draftState) => {
+                    if (
+                        typeof position === 'number' &&
+                        Array.isArray(draftState.selected[category])
+                        // (
+                        //     draftState.selected[category] as (DB_CommonType & {
+                        //         plugName: string;
+                        //     } & MeshData)[]
+                        // ).length
+                    ) {
+                        (draftState.selected[category][position] as ZustandStore['selected']['hoverPads'][0]).positionVector = vector;
+                    } else {
+                        (draftState.selected[category] as ZustandStore['selected']['board']).positionVector = vector;
+                    }
+                });
+            },
+
             store_cycleBoards: (direction) => {
                 const currentSelection = get().selected;
                 const currentBoardIndex = currentSelection.board.id;
@@ -39,7 +59,7 @@ export const useZustand = create<ZustandStore>()(
                     following = dbBoards[currentBoardIndex - 1] ? currentBoardIndex - 1 : dbBoards.length - 1;
                 }
 
-                const newBoard = dbBoards[following];
+                const newBoard = { ...currentSelection.board, ...dbBoards[following] };
                 const newHoverPads = modifiedArrayLength(currentSelection.hoverPads, newBoard.socketNames.hoverPads.length);
                 const newOrnaments = modifiedArrayLength(currentSelection.ornaments, newBoard.socketNames.ornaments.length);
 
@@ -54,7 +74,8 @@ export const useZustand = create<ZustandStore>()(
             },
 
             store_cycleEngines: (direction) => {
-                const currentIndex = get().selected.engine.id;
+                const currentEngine = get().selected.engine;
+                const currentIndex = currentEngine.id;
                 const dbEngines = mockDb.Engines;
                 let following: number;
 
@@ -65,12 +86,13 @@ export const useZustand = create<ZustandStore>()(
                 }
 
                 set((draftState) => {
-                    draftState.selected.engine = dbEngines[following];
+                    draftState.selected.engine = { ...currentEngine, ...dbEngines[following] };
                 });
             },
 
             store_cycleHoverPads: (direction, position) => {
-                const currentIndex = get().selected.hoverPads[position].id;
+                const currentHoverPad = get().selected.hoverPads[position];
+                const currentIndex = currentHoverPad.id;
                 const dbHoverPads = mockDb.HoverPads;
                 let following: number;
 
@@ -81,12 +103,13 @@ export const useZustand = create<ZustandStore>()(
                 }
 
                 set((draftState) => {
-                    draftState.selected.hoverPads[position] = dbHoverPads[following];
+                    draftState.selected.hoverPads[position] = { ...currentHoverPad, ...dbHoverPads[following] };
                 });
             },
 
             store_cycleOrnaments: (direction, position) => {
-                const currentIndex = get().selected.ornaments[position].id;
+                const currentOrnament = get().selected.ornaments[position];
+                const currentIndex = currentOrnament.id;
                 const dbOrnaments = mockDb.Ornaments;
                 let following: number;
 
@@ -97,7 +120,7 @@ export const useZustand = create<ZustandStore>()(
                 }
 
                 set((draftState) => {
-                    draftState.selected.ornaments[position] = dbOrnaments[following];
+                    draftState.selected.ornaments[position] = { ...currentOrnament, ...dbOrnaments[following] };
                 });
             },
 
@@ -124,9 +147,14 @@ export const useZustand = create<ZustandStore>()(
                 });
             },
 
-            store_setCameraPosition: (category) => {
+            store_setCameraValues: ({ category, lookAt }) => {
+                const current = get().camera;
                 set((draftState) => {
-                    draftState.scene.cameraPosition = cameraPositions[category];
+                    draftState.camera = {
+                        ...current,
+                        ...(category && { position: cameraPositions[category] }),
+                        ...(lookAt && { lookAt }),
+                    };
                 });
             },
         },

@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { MathUtils, Mesh } from 'three';
-import PlugAccessory from './gltfJsx/PlugAccessory';
+import PlugAccessory from './PlugAccessory';
 import useBoardConfiguration from '../../hooks/useBoardConfiguration';
 import useBoardMeshAndSocket from '../../hooks/useBoardMeshAndSockets';
 import { MeshStandardMaterialProps } from '@react-three/fiber';
@@ -28,14 +28,14 @@ const HoverBoardAssembly: FC = () => {
             <group position={groupPos} rotation={[0, MathUtils.degToRad(90), 0]}>
                 <Board dbData={board} mesh={boardMesh} />
 
-                <PlugAccessory dbData={engine} socket={engineTransform} />
+                <PlugAccessory dbData={engine} socket={engineTransform} category='engine' />
 
                 {hoverPads.map((hoverPad, idx) => (
-                    <PlugAccessory key={idx} dbData={hoverPad} socket={hoverPadTransforms[idx]} />
+                    <PlugAccessory key={idx} dbData={hoverPad} socket={hoverPadTransforms[idx]} category='hoverPads' selectedPosition={idx} />
                 ))}
 
                 {ornaments.map((ornament, idx) => (
-                    <PlugAccessory key={idx} dbData={ornament} socket={ornamentTransforms[idx]} />
+                    <PlugAccessory key={idx} dbData={ornament} socket={ornamentTransforms[idx]} category='ornaments' selectedPosition={idx} />
                 ))}
             </group>
         );

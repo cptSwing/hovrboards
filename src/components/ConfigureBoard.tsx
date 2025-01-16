@@ -1,11 +1,12 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useZustand } from '../zustand';
 import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from '@heroicons/react/24/solid';
-import { DB_CommonType, ZustandStore } from '../types/types';
+import { DB_CommonType, MeshData, ZustandStore } from '../types/types';
 import ConfigureColor from './ConfigureColor';
 import { ConfigurationCard } from './ConfigurationCard';
+import { sceneRoot } from '../sceneConstants';
 
-const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycleOrnaments, store_setHexColor, store_setCameraPosition } =
+const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycleOrnaments, store_setHexColor, store_setCameraValues } =
     useZustand.getState().methods;
 
 const ConfigureBoard: FC = () => {
@@ -25,14 +26,15 @@ const ConfigureSingleItem: FC<{
     category: keyof ZustandStore['selected'];
     handleCyclingClick: (direction: 'next' | 'prev') => void;
 }> = ({ category, handleCyclingClick }) => {
-    const dbItem = useZustand((store) => store.selected[category]) as DB_CommonType;
+    const dbItem = useZustand((store) => store.selected[category]) as DB_CommonType & MeshData;
 
     return (
         <ConfigurationCard
             title={category}
             group={'configure-board'}
             defaultChecked={category === 'board'}
-            handleChecked={() => store_setCameraPosition(category)}
+            // handleChecked={() => store_setCameraValues({ category, lookAt: sceneRoot })}
+            handleChecked={() => store_setCameraValues({ category })}
         >
             <BoardItem category={category} item={dbItem} handleCyclingClick={handleCyclingClick} />
         </ConfigurationCard>
@@ -43,14 +45,15 @@ const ConfigureMultipleItems: FC<{
     category: keyof ZustandStore['selected'];
     handleCyclingClick: (direction: 'next' | 'prev', position: number) => void;
 }> = ({ category, handleCyclingClick }) => {
-    const dbItems = useZustand((store) => store.selected[category]) as DB_CommonType[];
+    const dbItems = useZustand((store) => store.selected[category]) as (DB_CommonType & MeshData)[];
 
     return (
         <ConfigurationCard
             title={category}
             group={'configure-board'}
             defaultChecked={category === 'board'}
-            handleChecked={() => store_setCameraPosition(category)}
+            // handleChecked={() => store_setCameraValues({ category, lookAt: dbItems[0].positionVector })}
+            handleChecked={() => store_setCameraValues({ category })}
         >
             <>
                 {dbItems.map((dbItem, idx) => (
@@ -69,11 +72,15 @@ const ConfigureMultipleItems: FC<{
 
 const BoardItem: FC<{
     category: keyof ZustandStore['selected'];
-    item: DB_CommonType;
+    item: DB_CommonType & MeshData;
     position?: number;
     handleCyclingClick: (direction: 'next' | 'prev', position?: number) => void;
 }> = ({ category, item, position, handleCyclingClick }) => {
-    const { name, description, hexColor } = item;
+    const { name, description, hexColor, positionVector } = item;
+
+    // useEffect(() => {
+    //     store_setCameraValues({ lookAt: positionVector });
+    // }, [positionVector]);
 
     return (
         <div className='flex flex-col items-center justify-start gap-y-4 border-t border-t-slate-500 p-2 pb-3'>
@@ -89,6 +96,7 @@ const BoardItem: FC<{
                     className='size-8 cursor-pointer'
                     onClick={() => {
                         handleCyclingClick('next', position);
+                        // store_setCameraValues({ lookAt: positionVector });
                     }}
                 />
             </div>

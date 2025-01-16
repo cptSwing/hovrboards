@@ -38,6 +38,7 @@ export default [
             'object-shorthand': 'warn',
             'no-console': 'warn',
             'no-unused-vars': 'off',
+            'no-unused-expressions': 'off',
 
             'prettier/prettier': 'error',
             '@typescript-eslint/no-unused-vars': [
@@ -52,6 +53,7 @@ export default [
                     destructuredArrayIgnorePattern: '^_',
                 },
             ],
+            '@typescript-eslint/no-unused-expressions': ['error', { allowTernary: true, allowShortCircuit: true }],
 
             'react/no-unknown-property': 'off',
 

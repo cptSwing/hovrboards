@@ -46,16 +46,22 @@ export type GLTFResult = GLTF & {
     materials: { [key: string]: Material };
 };
 
+export type MeshData = {
+    positionVector: Vector3;
+    directionalVector?: Vector3;
+};
+
 export type ZustandStore = {
     selected: {
-        board: DB_BoardType;
-        engine: DB_EngineType;
-        hoverPads: DB_HoverPadType[];
-        ornaments: DB_OrnamentType[];
+        board: DB_BoardType & MeshData;
+        engine: DB_EngineType & MeshData;
+        hoverPads: (DB_HoverPadType & MeshData)[];
+        ornaments: (DB_OrnamentType & MeshData)[];
     };
 
-    scene: {
-        cameraPosition: Vector3;
+    camera: {
+        position: Vector3;
+        lookAt: Vector3;
     };
 
     settings: {
@@ -68,12 +74,13 @@ export type ZustandStore = {
     };
 
     methods: {
+        store_setPositionVector: (category: keyof ZustandStore['selected'], vector: Vector3, position?: number) => void;
         store_cycleBoards: (direction: 'next' | 'prev') => void;
         store_cycleEngines: (direction: 'next' | 'prev') => void;
         store_cycleHoverPads: (direction: 'next' | 'prev', position: number) => void;
         store_cycleOrnaments: (direction: 'next' | 'prev', position: number) => void;
         store_setHexColor: (hexColor: string, category: keyof ZustandStore['selected'], position?: number) => void;
         store_setBackgroundSettings: ({ color, preset, isVisible, showBackdrop }: Partial<ZustandStore['settings']['background']>) => void;
-        store_setCameraPosition: (category: keyof ZustandStore['selected']) => void;
+        store_setCameraValues: ({ category, lookAt }: Partial<{ category: keyof ZustandStore['selected']; lookAt: Vector3 }>) => void;
     };
 };
