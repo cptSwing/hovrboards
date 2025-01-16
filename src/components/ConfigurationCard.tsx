@@ -21,7 +21,7 @@ export const ConfigurationCard: FC<{
             />
             <label
                 htmlFor={inputId}
-                className='flex cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
+                className='flex cursor-pointer select-none items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
             >
                 <div className='capitalize'>{title}:</div>
                 <ChevronDownIcon className='h-5 rotate-[calc(90deg*var(--unchecked))] transition-transform' />

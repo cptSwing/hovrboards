@@ -77,7 +77,7 @@ const BoardItem: FC<{
 
     return (
         <>
-            <div className='flex w-full items-center justify-between'>
+            <div className='flex w-full select-none items-center justify-between'>
                 <ArrowLeftCircleIcon
                     className='size-8 cursor-pointer'
                     onClick={() => {
