@@ -76,7 +76,7 @@ const BoardItem: FC<{
     const { name, description, hexColor } = item;
 
     return (
-        <>
+        <div className='flex flex-col items-center justify-start gap-y-4 border-t border-t-slate-500 p-2 pb-3'>
             <div className='flex w-full select-none items-center justify-between'>
                 <ArrowLeftCircleIcon
                     className='size-8 cursor-pointer'
@@ -101,6 +101,6 @@ const BoardItem: FC<{
                 category={category}
                 position={position}
             />
-        </>
+        </div>
     );
 };

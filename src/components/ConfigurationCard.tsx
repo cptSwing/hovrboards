@@ -21,13 +21,15 @@ export const ConfigurationCard: FC<{
             />
             <label
                 htmlFor={inputId}
-                className='flex cursor-pointer select-none items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'
+                className='flex cursor-pointer select-none items-center justify-between self-start rounded-md bg-slate-700 px-2 py-0.5 text-white/75 transition-colors duration-100 [--unchecked:1] hover:bg-slate-600 active:bg-slate-600 peer-checked:rounded-b-none peer-checked:bg-slate-500 peer-checked:font-medium peer-checked:text-slate-800 peer-checked:[--unchecked:0]'
             >
                 <div className='capitalize'>{title}:</div>
                 <ChevronDownIcon className='h-5 rotate-[calc(90deg*var(--unchecked))] transition-transform' />
             </label>
 
-            <div className='hidden flex-col items-center justify-start gap-y-4 rounded-b-md bg-gray-600 p-2 peer-checked:flex'>{children}</div>
+            <div className='pointer-events-none max-h-0 rounded-b-md bg-slate-600 opacity-0 transition-[max-height,opacity] duration-[150ms,300ms] peer-checked:pointer-events-auto peer-checked:max-h-[32rem] peer-checked:opacity-100'>
+                {children}
+            </div>
         </div>
     );
 };

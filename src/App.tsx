@@ -29,7 +29,7 @@ const PanelLeft = () => {
                 <Cog8ToothIcon />
             </label>
             <div
-                className='absolute -left-full top-0 z-10 h-full w-1/5 bg-slate-500/75 transition-[left] focus:outline-none peer-checked:left-0'
+                className='absolute -left-full top-0 z-10 h-full w-1/5 bg-slate-500/50 transition-[left] focus:outline-none peer-checked:left-0'
                 tabIndex={-1}
                 onTransitionEnd={(ev) => (ev.target as HTMLDivElement).focus()}
                 onBlur={(ev) => {
@@ -48,7 +48,7 @@ const PanelLeft = () => {
 
 const PanelRight = () => {
     return (
-        <div className='absolute right-0 top-0 z-10 h-full w-1/5 bg-slate-500/75'>
+        <div className='absolute right-0 top-0 z-10 h-full w-1/5 bg-slate-500/50'>
             <div className='w-full p-4'>
                 <ConfigureBoard />
             </div>
