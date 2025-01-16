@@ -21,12 +21,11 @@ const BackgroundSettings: FC = () => {
 
     // WARN change once there are more settings
     const alwaysOpen = true;
-    const inputId = `configure-settings-title-${alwaysOpen}`;
 
     const backgroundPresets = Object.keys(presetsObj);
 
     return (
-        <ConfigurationCard title={'Background'} inputId={inputId} defaultChecked={alwaysOpen}>
+        <ConfigurationCard title={'Background'} group={'configure-settings'} defaultChecked={alwaysOpen}>
             <>
                 <div>
                     <label htmlFor='background-map-select'>Choose Environment:</label>
