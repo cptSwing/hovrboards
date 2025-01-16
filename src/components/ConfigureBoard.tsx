@@ -10,7 +10,7 @@ const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycle
 
 const ConfigureBoard: FC = () => {
     return (
-        <div className='space-y-4 first:mt-[--margin]'>
+        <div className='space-y-4'>
             <ConfigureSingleItem category='board' handleCyclingClick={store_cycleBoards} />
             <ConfigureSingleItem category='engine' handleCyclingClick={store_cycleEngines} />
             <ConfigureMultipleItems category='hoverPads' handleCyclingClick={store_cycleHoverPads} />
@@ -36,11 +36,7 @@ const ConfigureSingleItem: FC<{
                 type='radio'
                 className='peer hidden'
                 defaultChecked={category === 'board'}
-                onChange={(ev) => {
-                    if (ev.target.checked) {
-                        store_setCameraPosition(cameraPositions[category]);
-                    }
-                }}
+                onChange={(ev) => ev.target.checked && store_setCameraPosition(category)}
             />
             <label
                 htmlFor={inputId}
@@ -66,7 +62,14 @@ const ConfigureMultipleItems: FC<{
 
     return (
         <div>
-            <input name='configure-board-titles' id={inputId} type='radio' className='peer hidden' defaultChecked={category === 'board'} />
+            <input
+                name='configure-board-titles'
+                id={inputId}
+                type='radio'
+                className='peer hidden'
+                defaultChecked={category === 'board'}
+                onChange={(ev) => ev.target.checked && store_setCameraPosition(category)}
+            />
             <label
                 htmlFor={inputId}
                 className='flex cursor-pointer items-center justify-between self-start rounded-md bg-gray-700 px-2 py-0.5 [--unchecked:1] peer-checked:rounded-b-none peer-checked:[--unchecked:0]'

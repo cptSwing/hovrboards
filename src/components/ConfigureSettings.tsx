@@ -8,7 +8,7 @@ const store_setBackgroundSettings = useZustand.getState().methods.store_setBackg
 
 const ConfigureSettings = () => {
     return (
-        <div className='space-y-4 first:mt-[--margin]'>
+        <div className='space-y-4'>
             <BackgroundSettings />
         </div>
     );

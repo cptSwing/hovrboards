@@ -23,7 +23,7 @@ export const useZustand = create<ZustandStore>()(
         },
 
         scene: {
-            cameraFocus: cameraPositions.board,
+            cameraPosition: cameraPositions.board,
         },
 
         methods: {
@@ -124,8 +124,10 @@ export const useZustand = create<ZustandStore>()(
                 });
             },
 
-            store_setCameraPosition: (position) => {
-                set((draftState) => draftState.scene.cameraFocus.set(position.x, position.y, position.z));
+            store_setCameraPosition: (category) => {
+                set((draftState) => {
+                    draftState.scene.cameraPosition = cameraPositions[category];
+                });
             },
         },
     })),

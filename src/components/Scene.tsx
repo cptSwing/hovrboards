@@ -8,7 +8,11 @@ import { useEffect } from 'react';
 const lookAtSceneRoot = new Vector3(0, 0, 0);
 
 const Scene = () => {
-    const cameraPosition = useZustand((store) => store.scene.cameraFocus);
+    const cameraPosition = useZustand((store) => store.scene.cameraPosition);
+
+    useEffect(() => {
+        console.log('%c[Scene]', 'color: #c4c1cb', `cameraPosition :`, cameraPosition);
+    }, [cameraPosition]);
 
     return (
         <Canvas shadows={true} gl={{ alpha: false, antialias: true }}>
