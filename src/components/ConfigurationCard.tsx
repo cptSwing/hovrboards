@@ -3,15 +3,16 @@ import { FC, ReactElement } from 'react';
 
 export const ConfigurationCard: FC<{
     title: string;
-    inputId: string;
+    group: string;
     defaultChecked: boolean;
     handleChecked?: () => void;
     children: ReactElement;
-}> = ({ title, inputId, defaultChecked, handleChecked, children }) => {
+}> = ({ title, group, defaultChecked, handleChecked, children }) => {
+    const inputId = `${group}-${title}`;
     return (
         <div className='shadow-sm'>
             <input
-                name='configure-board-titles'
+                name={group}
                 id={inputId}
                 type='radio'
                 className='peer hidden'

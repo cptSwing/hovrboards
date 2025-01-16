@@ -26,10 +26,14 @@ const ConfigureSingleItem: FC<{
     handleCyclingClick: (direction: 'next' | 'prev') => void;
 }> = ({ category, handleCyclingClick }) => {
     const dbItem = useZustand((store) => store.selected[category]) as DB_CommonType;
-    const inputId = `configure-board-title-${category}`;
 
     return (
-        <ConfigurationCard title={category} inputId={inputId} defaultChecked={category === 'board'} handleChecked={() => store_setCameraPosition(category)}>
+        <ConfigurationCard
+            title={category}
+            group={'configure-board'}
+            defaultChecked={category === 'board'}
+            handleChecked={() => store_setCameraPosition(category)}
+        >
             <BoardItem category={category} item={dbItem} handleCyclingClick={handleCyclingClick} />
         </ConfigurationCard>
     );
@@ -40,10 +44,14 @@ const ConfigureMultipleItems: FC<{
     handleCyclingClick: (direction: 'next' | 'prev', position: number) => void;
 }> = ({ category, handleCyclingClick }) => {
     const dbItems = useZustand((store) => store.selected[category]) as DB_CommonType[];
-    const inputId = `configure-board-title-${category}`;
 
     return (
-        <ConfigurationCard title={category} inputId={inputId} defaultChecked={category === 'board'} handleChecked={() => store_setCameraPosition(category)}>
+        <ConfigurationCard
+            title={category}
+            group={'configure-board'}
+            defaultChecked={category === 'board'}
+            handleChecked={() => store_setCameraPosition(category)}
+        >
             <>
                 {dbItems.map((dbItem, idx) => (
                     <BoardItem
@@ -95,27 +103,4 @@ const BoardItem: FC<{
             />
         </>
     );
-};
-
-const _randomHexColor = (string?: string) => {
-    let final: string;
-    if (string) {
-        let sum = 0;
-        for (let i = 0; i < string.length; i++) {
-            sum += string.charCodeAt(i);
-        }
-
-        /* This is kinda arbitrary */
-        sum = sum / (string.length * 1000);
-
-        /* The number 16,777,215 is the total possible combinations of RGB(255,255,255) which is 32 bit colour. */
-        final = `${Math.floor(sum * 16777215).toString(16)}`;
-    } else {
-        final = `${Math.floor(Math.random() * 16777215).toString(16)}`;
-    }
-
-    if (final.length < 6) {
-        final.padEnd(6, '0');
-    }
-    return '#' + final;
 };
