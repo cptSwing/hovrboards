@@ -47,7 +47,8 @@ export type GLTFResult = GLTF & {
 };
 
 export type MeshData = {
-    positionVector: Vector3;
+    socketPosition: Vector3;
+    socketRotation: Euler;
     directionalVector?: Vector3;
 };
 
@@ -74,13 +75,13 @@ export type ZustandStore = {
     };
 
     methods: {
-        store_setPositionVector: (category: keyof ZustandStore['selected'], vector: Vector3, position?: number) => void;
+        store_setSocketTransforms: (category: keyof ZustandStore['selected'], position: Vector3, rotation: Euler, selectionIndex?: number) => void;
         store_cycleBoards: (direction: 'next' | 'prev') => void;
         store_cycleEngines: (direction: 'next' | 'prev') => void;
         store_cycleHoverPads: (direction: 'next' | 'prev', position: number) => void;
         store_cycleOrnaments: (direction: 'next' | 'prev', position: number) => void;
         store_setHexColor: (hexColor: string, category: keyof ZustandStore['selected'], position?: number) => void;
         store_setBackgroundSettings: ({ color, preset, isVisible, showBackdrop }: Partial<ZustandStore['settings']['background']>) => void;
-        store_setCameraValues: ({ category, lookAt }: Partial<{ category: keyof ZustandStore['selected']; lookAt: Vector3 }>) => void;
+        store_setCameraValues: ({ position, lookAt }: Partial<{ position: Vector3; lookAt: Vector3 }>) => void;
     };
 };
