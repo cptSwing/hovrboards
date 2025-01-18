@@ -3,15 +3,25 @@ import { immer } from 'zustand/middleware/immer';
 import { DB_CommonType, ZustandStore } from './types/types';
 import mockDb from './mockApi/mockDb.json';
 import { cameraPositions, sceneRoot } from './sceneConstants';
-import { Vector3 } from 'three';
+import { Euler, Vector3 } from 'three';
+
+const nullEuler = new Euler();
 
 export const useZustand = create<ZustandStore>()(
     immer((set, get) => ({
         selected: {
-            board: { ...mockDb['Boards'][0], positionVector: sceneRoot },
-            engine: { ...mockDb['Engines'][0], positionVector: sceneRoot },
-            hoverPads: mockDb['Boards'][0].socketNames.hoverPads.map((_, idx) => ({ ...mockDb['HoverPads'][idx], positionVector: sceneRoot })),
-            ornaments: mockDb['Boards'][0].socketNames.ornaments.map((_, idx) => ({ ...mockDb['Ornaments'][idx], positionVector: sceneRoot })),
+            board: { ...mockDb['Boards'][0], socketPosition: sceneRoot, socketRotation: nullEuler },
+            engine: { ...mockDb['Engines'][0], socketPosition: sceneRoot, socketRotation: nullEuler },
+            hoverPads: mockDb['Boards'][0].socketNames.hoverPads.map((_, idx) => ({
+                ...mockDb['HoverPads'][idx],
+                socketPosition: sceneRoot,
+                socketRotation: nullEuler,
+            })),
+            ornaments: mockDb['Boards'][0].socketNames.ornaments.map((_, idx) => ({
+                ...mockDb['Ornaments'][idx],
+                socketPosition: sceneRoot,
+                socketRotation: nullEuler,
+            })),
         },
 
         settings: {
@@ -25,24 +35,19 @@ export const useZustand = create<ZustandStore>()(
 
         camera: {
             position: cameraPositions.board,
-            lookAt: new Vector3(1, -1, 1),
+            lookAt: new Vector3(0, 0, 0),
         },
 
         methods: {
-            store_setPositionVector: (category, vector, position) => {
+            store_setSocketTransforms: (category, position, rotation, selectionIndex) => {
+                // TODO clean up types
                 set((draftState) => {
-                    if (
-                        typeof position === 'number' &&
-                        Array.isArray(draftState.selected[category])
-                        // (
-                        //     draftState.selected[category] as (DB_CommonType & {
-                        //         plugName: string;
-                        //     } & MeshData)[]
-                        // ).length
-                    ) {
-                        (draftState.selected[category][position] as ZustandStore['selected']['hoverPads'][0]).positionVector = vector;
+                    if (typeof selectionIndex === 'number' && Array.isArray(draftState.selected[category])) {
+                        (draftState.selected[category][selectionIndex] as ZustandStore['selected']['hoverPads'][0]).socketPosition = position;
+                        (draftState.selected[category][selectionIndex] as ZustandStore['selected']['hoverPads'][0]).socketRotation = rotation;
                     } else {
-                        (draftState.selected[category] as ZustandStore['selected']['board']).positionVector = vector;
+                        (draftState.selected[category] as ZustandStore['selected']['board']).socketPosition = position;
+                        (draftState.selected[category] as ZustandStore['selected']['board']).socketRotation = rotation;
                     }
                 });
             },
@@ -147,12 +152,13 @@ export const useZustand = create<ZustandStore>()(
                 });
             },
 
-            store_setCameraValues: ({ category, lookAt }) => {
+            store_setCameraValues: ({ position, lookAt }) => {
                 const current = get().camera;
+
                 set((draftState) => {
                     draftState.camera = {
                         ...current,
-                        ...(category && { position: cameraPositions[category] }),
+                        ...(position && { position }),
                         ...(lookAt && { lookAt }),
                     };
                 });

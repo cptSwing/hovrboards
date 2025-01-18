@@ -1,10 +1,11 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useZustand } from '../zustand';
 import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from '@heroicons/react/24/solid';
 import { DB_CommonType, MeshData, ZustandStore } from '../types/types';
 import ConfigureColor from './ConfigureColor';
 import { ConfigurationCard } from './ConfigurationCard';
-import { sceneRoot } from '../sceneConstants';
+import { cameraPositions } from '../sceneConstants';
+import { Vector3 } from 'three';
 
 const { store_cycleBoards, store_cycleEngines, store_cycleHoverPads, store_cycleOrnaments, store_setHexColor, store_setCameraValues } =
     useZustand.getState().methods;
@@ -33,8 +34,7 @@ const ConfigureSingleItem: FC<{
             title={category}
             group={'configure-board'}
             defaultChecked={category === 'board'}
-            // handleChecked={() => store_setCameraValues({ category, lookAt: sceneRoot })}
-            handleChecked={() => store_setCameraValues({ category })}
+            handleChecked={() => store_setCameraValues({ position: cameraPositions[category], lookAt: dbItem.socketPosition })}
         >
             <BoardItem category={category} item={dbItem} handleCyclingClick={handleCyclingClick} />
         </ConfigurationCard>
@@ -52,8 +52,7 @@ const ConfigureMultipleItems: FC<{
             title={category}
             group={'configure-board'}
             defaultChecked={category === 'board'}
-            // handleChecked={() => store_setCameraValues({ category, lookAt: dbItems[0].positionVector })}
-            handleChecked={() => store_setCameraValues({ category })}
+            handleChecked={() => store_setCameraValues({ position: cameraPositions[category], lookAt: dbItems[0].socketPosition })}
         >
             <>
                 {dbItems.map((dbItem, idx) => (
@@ -76,14 +75,18 @@ const BoardItem: FC<{
     position?: number;
     handleCyclingClick: (direction: 'next' | 'prev', position?: number) => void;
 }> = ({ category, item, position, handleCyclingClick }) => {
-    const { name, description, hexColor, positionVector } = item;
-
-    // useEffect(() => {
-    //     store_setCameraValues({ lookAt: positionVector });
-    // }, [positionVector]);
+    const { name, description, hexColor, socketPosition, socketRotation } = item;
 
     return (
-        <div className='flex flex-col items-center justify-start gap-y-4 border-t border-t-slate-500 p-2 pb-3'>
+        <div
+            className='flex flex-col items-center justify-start gap-y-4 border-t border-t-slate-500 p-2 pb-3'
+            onClick={() => {
+                const zAxis = new Vector3(0, 1, 0).applyEuler(socketRotation).multiplyScalar(0.5);
+                const positionCopy = socketPosition.clone().add(zAxis);
+
+                store_setCameraValues({ position: positionCopy, lookAt: socketPosition });
+            }}
+        >
             <div className='flex w-full select-none items-center justify-between'>
                 <ArrowLeftCircleIcon
                     className='size-8 cursor-pointer'
@@ -96,7 +99,6 @@ const BoardItem: FC<{
                     className='size-8 cursor-pointer'
                     onClick={() => {
                         handleCyclingClick('next', position);
-                        // store_setCameraValues({ lookAt: positionVector });
                     }}
                 />
             </div>

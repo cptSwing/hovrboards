@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { MathUtils, Mesh } from 'three';
+import { Mesh } from 'three';
 import PlugAccessory from './PlugAccessory';
 import useBoardConfiguration from '../../hooks/useBoardConfiguration';
 import useBoardMeshAndSocket from '../../hooks/useBoardMeshAndSockets';
@@ -25,17 +25,17 @@ const HoverBoardAssembly: FC = () => {
         const { boardMesh, engineTransform, hoverPadTransforms, ornamentTransforms } = meshAndSockets;
 
         return (
-            <group position={groupPos} rotation={[0, MathUtils.degToRad(90), 0]}>
+            <group position={groupPos} rotation={[0, 0, 0]}>
                 <Board dbData={board} mesh={boardMesh} />
 
-                <PlugAccessory dbData={engine} socket={engineTransform} category='engine' />
+                <PlugAccessory dbData={engine} socket={engineTransform} />
 
                 {hoverPads.map((hoverPad, idx) => (
-                    <PlugAccessory key={idx} dbData={hoverPad} socket={hoverPadTransforms[idx]} category='hoverPads' selectedPosition={idx} />
+                    <PlugAccessory key={idx} dbData={hoverPad} socket={hoverPadTransforms[idx]} />
                 ))}
 
                 {ornaments.map((ornament, idx) => (
-                    <PlugAccessory key={idx} dbData={ornament} socket={ornamentTransforms[idx]} category='ornaments' selectedPosition={idx} />
+                    <PlugAccessory key={idx} dbData={ornament} socket={ornamentTransforms[idx]} />
                 ))}
             </group>
         );
