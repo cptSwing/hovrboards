@@ -26,7 +26,7 @@ const BackgroundSettings: FC = () => {
 
     return (
         <ConfigurationCard title={'Background'} group={'configure-settings'} defaultChecked={alwaysOpen}>
-            <>
+            <div className='flex flex-col items-center justify-start gap-y-4 border-t border-t-slate-500 p-2 pb-3'>
                 <div>
                     <label htmlFor='background-map-select'>Choose Environment:</label>
                     <select
@@ -70,7 +70,7 @@ const BackgroundSettings: FC = () => {
                         className='ml-2'
                     />
                 </div>
-            </>
+            </div>
         </ConfigurationCard>
     );
 };
