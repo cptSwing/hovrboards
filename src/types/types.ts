@@ -18,13 +18,9 @@ export type DB_BoardType = DB_CommonType & {
     };
 };
 
-export type DB_AccessoryType = DB_CommonType & {
-    plugName: string;
-};
-
-export type DB_EngineType = DB_AccessoryType;
-export type DB_HoverPadType = DB_AccessoryType;
-export type DB_OrnamentType = DB_AccessoryType;
+export type DB_EngineType = DB_CommonType;
+export type DB_HoverPadType = DB_CommonType;
+export type DB_OrnamentType = DB_CommonType;
 
 export type DBType = {
     Boards: DB_BoardType[];

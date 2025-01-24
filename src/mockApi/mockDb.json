@@ -23,6 +23,18 @@
                 "hoverPads": ["socket_hoverpad_1", "socket_hoverpad_2"],
                 "ornaments": ["socket_ornament_1", "socket_ornament_2", "socket_ornament_3"]
             }
+        },
+        {
+            "id": 2,
+            "name": "Stiletto",
+            "description": "Sleek and deadly (hopefully to others only)",
+            "filePath": "/gltf/board_stiletto.glb",
+            "hexColor": "#5a3c5e",
+            "socketNames": {
+                "engine": "socket_engine",
+                "hoverPads": ["socket_hoverpad_1"],
+                "ornaments": ["socket_ornament_1", "socket_ornament_2", "socket_ornament_3"]
+            }
         }
     ],
     "Engines": [
@@ -31,8 +43,14 @@
             "name": "OVR9000",
             "description": "Copied often, seldom surpassed",
             "filePath": "/gltf/engine_ovr.glb",
-            "hexColor": "#dc6ac4",
-            "plugName": "plug_engine"
+            "hexColor": "#dc6ac4"
+        },
+        {
+            "id": 1,
+            "name": "TurboJet",
+            "description": "The Afterburner leaves an impression after burnin'!",
+            "filePath": "/gltf/engine_turbojet.glb",
+            "hexColor": "#cda64c"
         }
     ],
     "HoverPads": [
@@ -41,24 +59,21 @@
             "name": "Full Circle",
             "description": "The absolute Standard in soft hovering",
             "filePath": "/gltf/hoverpad_fullcircle.glb",
-            "hexColor": "#47c2d1",
-            "plugName": "plug_hoverpad"
+            "hexColor": "#47c2d1"
         },
         {
             "id": 1,
             "name": "The Slice",
             "description": "Less refined - radical turns!",
             "filePath": "/gltf/hoverpad_theslice.glb",
-            "hexColor": "#b08f3f",
-            "plugName": "plug_hoverpad"
+            "hexColor": "#b08f3f"
         },
         {
             "id": 2,
             "name": "Pow",
             "description": "You got it - pow()!",
             "filePath": "/gltf/hoverpad_pow.glb",
-            "hexColor": "#ccf5f7",
-            "plugName": "plug_hoverpad"
+            "hexColor": "#ccf5f7"
         }
     ],
     "Ornaments": [
@@ -67,16 +82,14 @@
             "name": "Bullhorns",
             "description": "Clear (and poke) obstacles on your route!",
             "filePath": "/gltf/ornament_bullhorns.glb",
-            "hexColor": "#4a18b9",
-            "plugName": "plug_ornament"
+            "hexColor": "#4a18b9"
         },
         {
             "id": 1,
             "name": "Star",
             "description": "Pointy in a pinch",
             "filePath": "/gltf/ornament_star.glb",
-            "hexColor": "#cfb173",
-            "plugName": "plug_ornament"
+            "hexColor": "#cfb173"
         }
     ]
 }

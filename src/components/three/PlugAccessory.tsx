@@ -1,11 +1,11 @@
 import { FC, useMemo } from 'react';
 import { useGLTF } from '@react-three/drei';
-import { DB_AccessoryType, GLTFResult, SocketPosRot } from '../../types/types';
+import { DB_CommonType, GLTFResult, SocketPosRot } from '../../types/types';
 import { Mesh, Object3D } from 'three';
 import { MeshStandardMaterialProps } from '@react-three/fiber';
 
-const PlugAccessory: FC<{ dbData: DB_AccessoryType; socket: SocketPosRot }> = ({ dbData, socket }) => {
-    const { filePath, plugName, hexColor } = dbData;
+const PlugAccessory: FC<{ dbData: DB_CommonType; socket: SocketPosRot }> = ({ dbData, socket }) => {
+    const { filePath, hexColor } = dbData;
     const [socketPosition, socketRotation] = socket;
     const { nodes } = useGLTF(filePath) as GLTFResult;
 
@@ -13,7 +13,7 @@ const PlugAccessory: FC<{ dbData: DB_AccessoryType; socket: SocketPosRot }> = ({
     const { name, position, rotation, geometry, material } = nodeMesh_Memo;
 
     return nodeMesh_Memo ? (
-        <group dispose={null} name={plugName} position={socketPosition} rotation={socketRotation}>
+        <group dispose={null} name={`${name}-group`} position={socketPosition} rotation={socketRotation}>
             <mesh name={name} castShadow receiveShadow geometry={geometry} position={position} rotation={rotation}>
                 <meshStandardMaterial {...(material as MeshStandardMaterialProps)} color={hexColor} />
             </mesh>
