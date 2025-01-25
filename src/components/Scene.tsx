@@ -1,11 +1,11 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Backdrop, Environment, Float, PerspectiveCamera } from '@react-three/drei';
-import { MathUtils, PerspectiveCamera as PerspectiveCameraImpl, Quaternion } from 'three';
+import { MathUtils, Quaternion } from 'three';
 
 import HoverBoardAssembly from './three/HoverBoardAssembly';
 import { Color, Vector3 } from 'three';
 import { useZustand } from '../zustand';
-import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 
 const Scene = () => {
     return (
@@ -33,17 +33,6 @@ export default Scene;
 
 const Camera = () => {
     const { position: finalPosition, lookAt: finalLookAt } = useZustand((store) => store.camera);
-    const cameraRef = useRef<PerspectiveCameraImpl | null>(null);
-
-    // Setting initial values for PerspectiveCamera once onMount here, afterwards setting them in CameraMotion
-    useEffect(() => {
-        if (cameraRef.current) {
-            cameraRef.current.position.copy(finalPosition);
-            cameraRef.current.lookAt(finalLookAt);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/exhaustive-deps
-    }, []);
-
     const [hasChanged, setHasChanged] = useState(true);
 
     // Trigger CameraMotion mount on change of values
@@ -53,36 +42,29 @@ const Camera = () => {
 
     return (
         <>
-            <PerspectiveCamera ref={cameraRef} name='defaultCamera' makeDefault />
-            {hasChanged && cameraRef.current && (
-                <CameraMotion camera={cameraRef.current} position={finalPosition} lookAt={finalLookAt} setHasChangedState={setHasChanged} />
-            )}
+            <PerspectiveCamera name='defaultCamera' makeDefault />
+            {hasChanged && <CameraMotion position={finalPosition} lookAt={finalLookAt} setHasChangedState={setHasChanged} />}
         </>
     );
 };
 
 const intermediateLookAt = new Vector3();
 const squaredDistanceMax = 0.00001;
-const lerpSpeed = 0.1;
 
 const CameraMotion: FC<{
-    camera: PerspectiveCameraImpl;
     position: Vector3;
     lookAt: Vector3;
     setHasChangedState: Dispatch<SetStateAction<boolean>>;
-}> = ({ camera, position, lookAt, setHasChangedState }) => {
-    useEffect(() => {
-        return () => {
-            intermediateLookAt.copy(lookAt);
-        };
-    }, [lookAt]);
+}> = ({ position, lookAt, setHasChangedState }) => {
+    const camera = useThree((state) => state.camera);
+    const transitionSpeed = useZustand((state) => state.settings.camera.transitionSpeed);
 
     useFrame(() => {
-        camera.position.lerp(position, lerpSpeed);
-        intermediateLookAt.lerp(lookAt, lerpSpeed);
+        camera.position.lerp(position, transitionSpeed);
+        intermediateLookAt.lerp(lookAt, transitionSpeed);
         camera.lookAt(intermediateLookAt);
 
-        // Unmounts self to get rid of useFrame; distanceToSquared() most performant test (plus, vector.equals(vector2) never triggers due to rounding differences)
+        // Basically unmounts self to get rid of useFrame calls; distanceToSquared() seemingly most performant test (plus, vector.equals(vector2) never triggers due to rounding differences)
         if (camera.position.distanceToSquared(position) < squaredDistanceMax && intermediateLookAt.distanceToSquared(lookAt) < squaredDistanceMax) {
             setHasChangedState(false);
         }

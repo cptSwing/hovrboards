@@ -68,6 +68,9 @@ export type ZustandStore = {
             color: string;
             showBackdrop: boolean;
         };
+        camera: {
+            transitionSpeed: number;
+        };
     };
 
     methods: {
@@ -78,6 +81,7 @@ export type ZustandStore = {
         store_cycleOrnaments: (direction: 'next' | 'prev', position: number) => void;
         store_setHexColor: (hexColor: string, category: keyof ZustandStore['selected'], position?: number) => void;
         store_setBackgroundSettings: ({ color, preset, isVisible, showBackdrop }: Partial<ZustandStore['settings']['background']>) => void;
+        store_setCameraSettings: ({ transitionSpeed }: Partial<ZustandStore['settings']['camera']>) => void;
         store_setCameraValues: ({ position, lookAt }: Partial<{ position: Vector3; lookAt: Vector3 }>) => void;
     };
 };

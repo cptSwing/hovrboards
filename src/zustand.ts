@@ -31,6 +31,9 @@ export const useZustand = create<ZustandStore>()(
                 color: '#808080',
                 showBackdrop: true,
             },
+            camera: {
+                transitionSpeed: 0.1,
+            },
         },
 
         camera: {
@@ -148,6 +151,17 @@ export const useZustand = create<ZustandStore>()(
                         ...(preset && { preset }),
                         ...(!(typeof isVisible === 'undefined') && { isVisible }),
                         ...(!(typeof showBackdrop === 'undefined') && { showBackdrop }),
+                    };
+                });
+            },
+
+            store_setCameraSettings: ({ transitionSpeed }) => {
+                const current = get().settings.camera;
+
+                set((draftState) => {
+                    draftState.settings.camera = {
+                        ...current,
+                        ...(typeof transitionSpeed === 'number' && { transitionSpeed }),
                     };
                 });
             },
