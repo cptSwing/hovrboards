@@ -11,7 +11,7 @@ const ConfigureColor: FC<{ hexColor: string; changeHandler: (newColor: string) =
     const defaultColor = useRef(hexColor);
     const inputId = category + position;
     return (
-        <div className='relative flex select-none items-start justify-between gap-x-2'>
+        <div className='relative flex select-none items-start justify-between gap-x-1'>
             <>
                 <input type='checkbox' id={inputId} className='peer hidden' />
 

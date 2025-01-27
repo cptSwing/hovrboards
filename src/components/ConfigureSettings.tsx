@@ -91,7 +91,7 @@ const CameraSettings: FC = () => {
                         value={transitionValue}
                         min={min}
                         max={max}
-                        step={min / 10}
+                        step={min}
                         onInput={({ currentTarget }) => setTransitionValue(parseFloat(currentTarget.value))}
                         onKeyDown={(ev) => {
                             if (ev.key === 'Enter') {
