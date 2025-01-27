@@ -1,7 +1,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Backdrop, Environment, Float, PerspectiveCamera } from '@react-three/drei';
 import { MathUtils, Quaternion } from 'three';
-
+import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import HoverBoardAssembly from './three/HoverBoardAssembly';
 import { Color, Vector3 } from 'three';
 import { useZustand } from '../zustand';
@@ -22,6 +22,7 @@ const Scene = () => {
 
             <Background />
 
+            <PostProcessing />
             <Debug />
         </Canvas>
     );
@@ -42,7 +43,7 @@ const Camera = () => {
 
     return (
         <>
-            <PerspectiveCamera name='defaultCamera' makeDefault />
+            <PerspectiveCamera name='defaultCamera' makeDefault filmGauge={100} filmOffset={10} />
             {hasChanged && <CameraMotion position={finalPosition} lookAt={finalLookAt} setHasChangedState={setHasChanged} />}
         </>
     );
@@ -89,6 +90,16 @@ const Background = () => {
 
             <Environment preset={preset} background={isVisible} />
         </>
+    );
+};
+
+const PostProcessing = () => {
+    return (
+        <EffectComposer>
+            <Bloom luminanceThreshold={1.1} mipmapBlur radius={0.6} intensity={1.5} />
+            {/* <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} /> */}
+            {/* <Vignette eskil={false} offset={0.05} darkness={1.1} /> */}
+        </EffectComposer>
     );
 };
 
