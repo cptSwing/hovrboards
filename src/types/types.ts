@@ -1,5 +1,5 @@
 import { PresetsType } from '@react-three/drei/helpers/environment-assets';
-import { BufferGeometry, Euler, Material, Mesh, Object3D, Vector3 } from 'three';
+import { BufferGeometry, Euler, Material, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { GLTF } from 'three-stdlib';
 
 export type DB_CommonType = {
@@ -33,7 +33,8 @@ export type SocketPosRot = [Vector3, Euler];
 export type SocketTransforms = { engineTransform: SocketPosRot; hoverPadTransforms: SocketPosRot[]; ornamentTransforms: SocketPosRot[] };
 
 //TODO for later
-export type MeshExtended = Mesh<BufferGeometry, Material[]>;
+export type MeshSingleMaterial = Mesh<BufferGeometry, MeshStandardMaterial>;
+export type MeshMultipleMaterials = Mesh<BufferGeometry, MeshStandardMaterial[]>;
 
 export type GLTFResult = GLTF & {
     nodes: {
