@@ -1,10 +1,9 @@
-import { FC, useState } from 'react';
-import { Mesh } from 'three';
+import { FC, useEffect, useRef, useState } from 'react';
 import PlugAccessory from './PlugAccessory';
 import useBoardConfiguration from '../../hooks/useBoardConfiguration';
 import useBoardMeshAndSocket from '../../hooks/useBoardMeshAndSockets';
-import { MeshStandardMaterialProps } from '@react-three/fiber';
-import { DB_BoardType } from '../../types/types';
+
+import { DB_BoardType, MeshMultipleMaterials } from '../../types/types';
 
 const HoverBoardAssembly: FC = () => {
     const { board, engine, hoverPads, ornaments } = useBoardConfiguration();
@@ -44,15 +43,23 @@ const HoverBoardAssembly: FC = () => {
 
 export default HoverBoardAssembly;
 
-const Board: FC<{ dbData: DB_BoardType; mesh: Mesh }> = ({ dbData, mesh }) => {
+const Board: FC<{ dbData: DB_BoardType; mesh: MeshMultipleMaterials }> = ({ dbData, mesh }) => {
+    const meshRef = useRef<MeshMultipleMaterials | null>(null);
+
     const { name, position, geometry, material } = mesh;
     const { hexColor } = dbData;
 
+    console.log('%c[HoverBoardAssembly]', 'color: #98ba8e', `geometry :`, geometry);
+
+    useEffect(() => {
+        if (meshRef.current) {
+            meshRef.current.material.forEach((mat) => mat.uniforms.u_customColor.value.set(hexColor));
+        }
+    }, [hexColor]);
+
     return (
         <group position={position} dispose={null}>
-            <mesh name={name} castShadow receiveShadow geometry={geometry}>
-                <meshStandardMaterial {...(material as MeshStandardMaterialProps)} color={hexColor} />
-            </mesh>
+            <mesh ref={meshRef} name={name} castShadow receiveShadow geometry={geometry} material={material} />
         </group>
     );
 };

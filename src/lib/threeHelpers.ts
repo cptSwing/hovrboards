@@ -1,8 +1,12 @@
-import { BufferGeometry, Material, Mesh, Object3D } from 'three';
+import { BufferGeometry, Color, Material, Mesh, MeshStandardMaterial, Object3D, Texture } from 'three';
 import { mergeBufferGeometries } from 'three-stdlib';
 import { GLTFResult, MeshMultipleMaterials, MeshSingleMaterial } from '../types/types';
+import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
+import colorMasked_VERT from './shaders/colorMasked_VERT.glsl';
+import colorMasked_FRAG from './shaders/colorMasked_FRAG.glsl';
 
 const useVertexColors = true;
+
 export const mergeMultimaterialMesh = (meshes: MeshSingleMaterial[], name: string) => {
     const geoAndMatCollection = {
         geometries: [],
@@ -10,7 +14,6 @@ export const mergeMultimaterialMesh = (meshes: MeshSingleMaterial[], name: strin
     } as { geometries: BufferGeometry[]; materials: Material[] };
 
     meshes.forEach(({ geometry, material }) => {
-        // console.log('%c[threeHelpers]', 'color: #cb69f8', `${name} geometry.index :`, geometry.index);
         geoAndMatCollection.geometries.push(geometry);
         geoAndMatCollection.materials.push(material);
     });
@@ -36,21 +39,43 @@ export const materialToArrayOfMaterials = (mesh: MeshSingleMaterial) => {
     return multiMatMesh;
 };
 
-export const setCommonMaterialValues = (material: Material) => {
-    if (useVertexColors) {
-        material.vertexColors = true;
-
-        // material.onBeforeCompile = (shader) => {
-        //     shader.fragmentShader = shader.fragmentShader.replace(
-        //         'vec4 diffuseColor = vec4( diffuse, opacity );',
-        //         'vec4 diffuseColor = vec4(mix(diffuse, vColor.rgb, vColor.r), opacity );',
-        //     );
-
-        //     shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', '');
-        // };
-    }
-};
+export const setCommonMaterialValues = (material: MeshStandardMaterial) =>
+    new ColorMaskedMaterial({
+        map: material.map,
+        normalMap: material.normalMap,
+        metalness: material.metalness,
+        roughness: material.roughness,
+        emissive: material.emissive,
+        name: material.name,
+    });
 
 export const getFirstMesh = (nodes: GLTFResult['nodes']) =>
     Object.values(nodes).find((node) => (node as Mesh).isMesh) as MeshSingleMaterial | MeshMultipleMaterials;
 export const _getFirstPlug = (nodes: GLTFResult['nodes']) => Object.values(nodes).find((node) => node.name.includes('plug_')) as Object3D;
+
+type ColorMaskedMaterialParams = {
+    map: Texture | null;
+    normalMap: Texture | null;
+    metalness: number;
+    roughness: number;
+    emissive: Color;
+    name: string;
+};
+
+export class ColorMaskedMaterial extends CustomShaderMaterial {
+    constructor(params: ColorMaskedMaterialParams) {
+        super({
+            baseMaterial: MeshStandardMaterial,
+            defines: { USE_COLOR_ALPHA: '', USE_UV: '', MAP_UV: 'uv', USE_NORMALMAP: '', NORMALMAP_UV: 'uv' },
+            vertexColors: useVertexColors,
+            vertexShader: colorMasked_VERT,
+            fragmentShader: colorMasked_FRAG,
+            uniforms: {
+                u_customColor: {
+                    value: new Color(),
+                },
+            },
+            ...params,
+        });
+    }
+}

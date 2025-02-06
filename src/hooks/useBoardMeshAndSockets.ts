@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei';
 import { DB_BoardType, GLTFResult, MeshMultipleMaterials, MeshSingleMaterial, SocketTransforms } from '../types/types';
-import { Euler, Group, Mesh, Object3D, Quaternion, Vector3 } from 'three';
+import { Euler, Group, Mesh, MeshStandardMaterial, Object3D, Quaternion, Vector3 } from 'three';
 import { useMemo } from 'react';
 import { useZustand } from '../zustand';
 import { materialToArrayOfMaterials, mergeMultimaterialMesh, setCommonMaterialValues } from '../lib/threeHelpers';
@@ -10,7 +10,7 @@ const { store_setSocketTransforms } = useZustand.getState().methods;
 const useBoardMeshAndSocket = (boardFilePath: DB_BoardType['filePath']) => {
     const { nodes } = useGLTF(boardFilePath) as GLTFResult;
 
-    const boardAndSockets_Memo: (SocketTransforms & { boardMesh: Mesh }) | undefined = useMemo(() => {
+    const boardAndSockets_Memo: (SocketTransforms & { boardMesh: MeshMultipleMaterials }) | undefined = useMemo(() => {
         if (nodes) {
             const nodeValues = Object.values(nodes);
             const groupIndex = nodeValues.findIndex((node) => (node as Group).isGroup);
@@ -22,17 +22,19 @@ const useBoardMeshAndSocket = (boardFilePath: DB_BoardType['filePath']) => {
                     nodeValues[groupIndex].children.filter((child) => (child as Mesh).isMesh) as MeshSingleMaterial[],
                     nodeValues[groupIndex].name,
                 );
-                mergedMesh.material.forEach((mat) => setCommonMaterialValues(mat));
+                mergedMesh.material = mergedMesh.material.map((mat) => setCommonMaterialValues(mat));
                 boardMesh = mergedMesh;
+
+                console.log('%c[useBoardMeshAndSockets]', 'color: #b4b3f7', `boardMesh.material :`, boardMesh.material);
             } else {
                 const mesh = nodeValues.find((node) => node.name.includes('board_')) as Mesh | undefined;
 
                 if (mesh) {
                     if (!Array.isArray(mesh.material)) {
-                        setCommonMaterialValues(mesh.material);
+                        mesh.material = setCommonMaterialValues(mesh.material as MeshStandardMaterial);
                         boardMesh = materialToArrayOfMaterials(mesh as MeshSingleMaterial);
                     } else {
-                        mesh.material.forEach((mat) => setCommonMaterialValues(mat));
+                        mesh.material.map((mat) => setCommonMaterialValues(mat as MeshStandardMaterial));
                         boardMesh = mesh as MeshMultipleMaterials;
                     }
                 }

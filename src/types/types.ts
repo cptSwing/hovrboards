@@ -1,6 +1,7 @@
 import { PresetsType } from '@react-three/drei/helpers/environment-assets';
 import { BufferGeometry, Euler, Material, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { GLTF } from 'three-stdlib';
+import { ColorMaskedMaterial } from '../lib/threeHelpers';
 
 export type DB_CommonType = {
     id: number; // WARN in SQL database this needs to correspond to array index
@@ -34,7 +35,7 @@ export type SocketTransforms = { engineTransform: SocketPosRot; hoverPadTransfor
 
 //TODO for later
 export type MeshSingleMaterial = Mesh<BufferGeometry, MeshStandardMaterial>;
-export type MeshMultipleMaterials = Mesh<BufferGeometry, MeshStandardMaterial[]>;
+export type MeshMultipleMaterials = Mesh<BufferGeometry, ColorMaskedMaterial[]>;
 
 export type GLTFResult = GLTF & {
     nodes: {

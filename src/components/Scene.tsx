@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Backdrop, Environment, Float, PerspectiveCamera } from '@react-three/drei';
-import { MathUtils, Quaternion } from 'three';
+import { MathUtils, MeshNormalMaterial, PlaneGeometry, Quaternion } from 'three';
 import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import HoverBoardAssembly from './three/HoverBoardAssembly';
 import { Color, Vector3 } from 'three';
@@ -21,6 +21,8 @@ const Scene = () => {
             <axesHelper />
 
             <Background />
+
+            <Streaks />
 
             <PostProcessing />
             <Debug />
@@ -72,6 +74,22 @@ const CameraMotion: FC<{
     });
 
     return null;
+};
+
+const Streaks = () => {
+    return (
+        <>
+            {Array.from({ length: 5 }).map((_, idx) => (
+                <mesh
+                    key={idx}
+                    geometry={new PlaneGeometry(0.5, 0.025)}
+                    material={new MeshNormalMaterial()}
+                    position={[0.125, 0.1 * idx, 0.25 * (idx - 2)]}
+                    rotation={[0, MathUtils.degToRad(-90), 0]}
+                />
+            ))}
+        </>
+    );
 };
 
 const Background = () => {
