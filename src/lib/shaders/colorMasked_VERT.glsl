@@ -1,5 +1,5 @@
-// uniform vec2 vUv;
+// varying vec2 csm_Uv;
 
 void main() {
-    // vUv = uv;
+    // csm_Uv = uv;
 }

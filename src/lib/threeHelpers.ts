@@ -1,13 +1,9 @@
-import { BufferGeometry, Color, Material, Mesh, MeshStandardMaterial, Object3D, Texture } from 'three';
+import { BufferGeometry, Material, Mesh, MeshStandardMaterial, Object3D, Object3DEventMap } from 'three';
 import { mergeBufferGeometries } from 'three-stdlib';
-import { GLTFResult, MeshMultipleMaterials, MeshSingleMaterial } from '../types/types';
-import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
-import colorMasked_VERT from './shaders/colorMasked_VERT.glsl';
-import colorMasked_FRAG from './shaders/colorMasked_FRAG.glsl';
+import { GLTFResult, MeshMaterialArray, MeshSingleMaterial } from '../types/types';
+import { ColorMaskedMaterial } from './materials/ColorMaskedMaterial';
 
-const useVertexColors = true;
-
-export const mergeMultimaterialMesh = (meshes: MeshSingleMaterial[], name: string) => {
+export const mergeToMultimaterialMesh = (meshes: MeshSingleMaterial[], name: string) => {
     const geoAndMatCollection = {
         geometries: [],
         materials: [],
@@ -22,14 +18,14 @@ export const mergeMultimaterialMesh = (meshes: MeshSingleMaterial[], name: strin
 
     const newMesh = new Mesh(mergedGeometries ?? new BufferGeometry(), geoAndMatCollection.materials);
     newMesh.name = name;
-    return newMesh as MeshMultipleMaterials;
+    return newMesh as MeshMaterialArray;
 };
 
 export const materialToArrayOfMaterials = (mesh: MeshSingleMaterial) => {
     const tempMat = mesh.material;
     const materialArray = [tempMat];
 
-    const multiMatMesh = mesh as unknown as MeshMultipleMaterials;
+    const multiMatMesh = mesh as unknown as MeshMaterialArray;
     multiMatMesh.material = materialArray;
 
     const geo = multiMatMesh.geometry;
@@ -39,43 +35,20 @@ export const materialToArrayOfMaterials = (mesh: MeshSingleMaterial) => {
     return multiMatMesh;
 };
 
-export const setCommonMaterialValues = (material: MeshStandardMaterial) =>
-    new ColorMaskedMaterial({
-        map: material.map,
-        normalMap: material.normalMap,
-        metalness: material.metalness,
-        roughness: material.roughness,
-        emissive: material.emissive,
-        name: material.name,
+export const setCommonMaterialValues = ({ map, normalMap, metalness, roughness, emissive, name }: MeshStandardMaterial) => {
+    const newMaterial = new ColorMaskedMaterial({
+        // map: map ?? emptyTex,
+        // normalMap: normalMap ?? emptyTex,
+        map,
+        normalMap,
+        metalness,
+        roughness,
+        emissive,
+        name,
     });
 
-export const getFirstMesh = (nodes: GLTFResult['nodes']) =>
-    Object.values(nodes).find((node) => (node as Mesh).isMesh) as MeshSingleMaterial | MeshMultipleMaterials;
-export const _getFirstPlug = (nodes: GLTFResult['nodes']) => Object.values(nodes).find((node) => node.name.includes('plug_')) as Object3D;
-
-type ColorMaskedMaterialParams = {
-    map: Texture | null;
-    normalMap: Texture | null;
-    metalness: number;
-    roughness: number;
-    emissive: Color;
-    name: string;
+    return newMaterial;
 };
 
-export class ColorMaskedMaterial extends CustomShaderMaterial {
-    constructor(params: ColorMaskedMaterialParams) {
-        super({
-            baseMaterial: MeshStandardMaterial,
-            defines: { USE_COLOR_ALPHA: '', USE_UV: '', MAP_UV: 'uv', USE_NORMALMAP: '', NORMALMAP_UV: 'uv' },
-            vertexColors: useVertexColors,
-            vertexShader: colorMasked_VERT,
-            fragmentShader: colorMasked_FRAG,
-            uniforms: {
-                u_customColor: {
-                    value: new Color(),
-                },
-            },
-            ...params,
-        });
-    }
-}
+export const getFirstMesh = (nodes: Object3D<Object3DEventMap>[]) => nodes.find((node) => (node as Mesh).isMesh) as MeshSingleMaterial;
+export const _getFirstPlug = (nodes: GLTFResult['nodes']) => Object.values(nodes).find((node) => node.name.includes('plug_')) as Object3D;

@@ -1,13 +1,15 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import PlugAccessory from './PlugAccessory';
 import useBoardConfiguration from '../../hooks/useBoardConfiguration';
-import useBoardMeshAndSocket from '../../hooks/useBoardMeshAndSockets';
+import useBoardSockets from '../../hooks/useBoardSockets';
 
-import { DB_BoardType, MeshMultipleMaterials } from '../../types/types';
+import { DB_BoardType, MeshMaterialArray } from '../../types/types';
+import usePrepareMesh from '../../hooks/usePrepareMesh';
 
 const HoverBoardAssembly: FC = () => {
     const { board, engine, hoverPads, ornaments } = useBoardConfiguration();
-    const meshAndSockets = useBoardMeshAndSocket(board.filePath);
+    const [boardMesh, boardSockets] = usePrepareMesh(board.filePath);
+    const socketTransforms = useBoardSockets(boardSockets);
 
     // TODO on board switch, move old to left and new in from right. Copy this component, then unmount?
     const [groupPos, _setGroupPos] = useState([0, 0, 0] as [x: number, y: number, z: number]);
@@ -18,10 +20,10 @@ const HoverBoardAssembly: FC = () => {
     //     }, 200);
     // }, [board]);
 
-    if (!meshAndSockets) {
+    if (!socketTransforms) {
         return null;
     } else {
-        const { boardMesh, engineTransform, hoverPadTransforms, ornamentTransforms } = meshAndSockets;
+        const { engineTransform, hoverPadTransforms, ornamentTransforms } = socketTransforms;
 
         return (
             <group position={groupPos} rotation={[0, 0, 0]}>
@@ -43,13 +45,11 @@ const HoverBoardAssembly: FC = () => {
 
 export default HoverBoardAssembly;
 
-const Board: FC<{ dbData: DB_BoardType; mesh: MeshMultipleMaterials }> = ({ dbData, mesh }) => {
-    const meshRef = useRef<MeshMultipleMaterials | null>(null);
+const Board: FC<{ dbData: DB_BoardType; mesh: MeshMaterialArray }> = ({ dbData, mesh }) => {
+    const meshRef = useRef<MeshMaterialArray | null>(null);
 
     const { name, position, geometry, material } = mesh;
     const { hexColor } = dbData;
-
-    console.log('%c[HoverBoardAssembly]', 'color: #98ba8e', `geometry :`, geometry);
 
     useEffect(() => {
         if (meshRef.current) {

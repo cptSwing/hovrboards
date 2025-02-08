@@ -2,11 +2,12 @@ uniform vec3 u_customColor;
 
 void main() {
     vec3 preColored = vColor.rgb;
+    vec3 baseColor = preColored;
 
     #if defined( USE_MAP )
-    vec3 baseColor = texture(map, vUv).rgb;
-    #else
-    vec3 baseColor = preColored;
+    #if defined(MAP_UV)
+    baseColor = texture(map, vUv).rgb;
+    #endif
     #endif
 
     float useCustomColor = vColor.a;
@@ -16,7 +17,5 @@ void main() {
 
     csm_DiffuseColor = vec4(coloredMap, opacity);
 
-    // csm_FragColor = vec4(vec3(useCustomColor), 1.);
     // csm_FragColor = vColor;
-    // csm_FragColor = vec4(u_customColor, 1.);
 }

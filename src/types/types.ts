@@ -1,7 +1,7 @@
 import { PresetsType } from '@react-three/drei/helpers/environment-assets';
 import { BufferGeometry, Euler, Material, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 import { GLTF } from 'three-stdlib';
-import { ColorMaskedMaterial } from '../lib/threeHelpers';
+import { ColorMaskedMaterial } from '../lib/materials/ColorMaskedMaterial';
 
 export type DB_CommonType = {
     id: number; // WARN in SQL database this needs to correspond to array index
@@ -33,9 +33,11 @@ export type DBType = {
 export type SocketPosRot = [Vector3, Euler];
 export type SocketTransforms = { engineTransform: SocketPosRot; hoverPadTransforms: SocketPosRot[]; ornamentTransforms: SocketPosRot[] };
 
-//TODO for later
+/** Incoming from GLTFLoader */
 export type MeshSingleMaterial = Mesh<BufferGeometry, MeshStandardMaterial>;
-export type MeshMultipleMaterials = Mesh<BufferGeometry, ColorMaskedMaterial[]>;
+
+/** All loaded GLTF as a single mesh with Geometry & Material Groups */
+export type MeshMaterialArray = Mesh<BufferGeometry, ColorMaskedMaterial[]>;
 
 export type GLTFResult = GLTF & {
     nodes: {
