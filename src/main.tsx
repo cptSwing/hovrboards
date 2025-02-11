@@ -3,8 +3,14 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 
+const useStrict = true;
+
 createRoot(document.getElementById('root')!).render(
-    <StrictMode>
+    useStrict ? (
+        <StrictMode>
+            <App />
+        </StrictMode>
+    ) : (
         <App />
-    </StrictMode>,
+    ),
 );
