@@ -1,54 +1,77 @@
-import { BufferGeometry, Material, Mesh, MeshStandardMaterial, Object3D, Object3DEventMap } from 'three';
+import { BufferGeometry, Mesh, MeshStandardMaterial, Object3D, Object3DEventMap } from 'three';
 import { mergeBufferGeometries } from 'three-stdlib';
-import { GLTFResult, MeshMaterialArray, MeshSingleMaterial } from '../types/types';
+import { GLTFResult, MeshWithMaterialArray, MeshWithSingleMaterial } from '../types/types';
 import { ColorMaskedMaterial } from './materials/ColorMaskedMaterial';
 
-export const mergeToMultimaterialMesh = (meshes: MeshSingleMaterial[], name: string) => {
-    const geoAndMatCollection = {
-        geometries: [],
-        materials: [],
-    } as { geometries: BufferGeometry[]; materials: Material[] };
+const geometryNameAddendum = '_geometry';
+const cachedGeometries: Record<string, BufferGeometry> = {};
 
-    meshes.forEach(({ geometry, material }) => {
-        geoAndMatCollection.geometries.push(geometry);
-        geoAndMatCollection.materials.push(material);
-    });
+export const mergeToMultimaterialMesh = (meshes: MeshWithSingleMaterial[], parentMesh: Object3D) => {
+    const geoName = parentMesh.name + geometryNameAddendum;
 
-    const mergedGeometries = mergeBufferGeometries(geoAndMatCollection.geometries, true);
+    const materials = meshes.map((mesh) => mesh.material);
+    let newGeometry: BufferGeometry;
 
-    const newMesh = new Mesh(mergedGeometries ?? new BufferGeometry(), geoAndMatCollection.materials);
-    newMesh.name = name;
-    return newMesh as MeshMaterialArray;
+    if (geoName in cachedGeometries) {
+        newGeometry = cachedGeometries[geoName];
+    } else {
+        const geometries = meshes.map(({ geometry }) => geometry);
+        const mergedGeometry = mergeBufferGeometries(geometries, true) as BufferGeometry;
+
+        if (!mergedGeometry) {
+            throw new Error('mergeBufferGeometries() error in mergeToMultimaterialMesh()');
+        } else {
+            mergedGeometry.name = geoName;
+            newGeometry = mergedGeometry;
+
+            cachedGeometries[geoName] = newGeometry;
+        }
+    }
+
+    const newMesh = new Mesh(newGeometry, materials);
+    newMesh.position.copy(parentMesh.position);
+    newMesh.rotation.copy(parentMesh.rotation);
+    newMesh.name = parentMesh.name;
+
+    return newMesh as MeshWithMaterialArray;
 };
 
-export const materialToArrayOfMaterials = (mesh: MeshSingleMaterial) => {
-    const tempMat = mesh.material;
-    const materialArray = [tempMat];
+export const materialToArrayOfMaterials = (mesh: MeshWithSingleMaterial) => {
+    const geoName = mesh.name + geometryNameAddendum;
 
-    const multiMatMesh = mesh as unknown as MeshMaterialArray;
+    const materialArray = [mesh.material];
+    let newGeometry: BufferGeometry;
+
+    if (geoName in cachedGeometries) {
+        newGeometry = cachedGeometries[geoName];
+    } else {
+        const geo = mesh.geometry.clone();
+        const count = geo.index ? geo.index.count : geo.getAttribute('position').count;
+        geo.addGroup(0, count, 0);
+        geo.name = geoName;
+        newGeometry = geo;
+
+        cachedGeometries[geoName] = newGeometry;
+    }
+
+    const multiMatMesh = mesh.clone() as unknown as MeshWithMaterialArray;
     multiMatMesh.material = materialArray;
-
-    const geo = multiMatMesh.geometry;
-    const count = geo.index ? geo.index.count : geo.getAttribute('position').count;
-    multiMatMesh.geometry.addGroup(0, count, 0);
+    multiMatMesh.geometry = newGeometry;
+    multiMatMesh.name = mesh.name;
 
     return multiMatMesh;
 };
 
-export const setCommonMaterialValues = ({ map, normalMap, metalness, roughness, emissive, name }: MeshStandardMaterial) => {
-    const newMaterial = new ColorMaskedMaterial({
-        // map: map ?? emptyTex,
-        // normalMap: normalMap ?? emptyTex,
+export const replaceWithCustomMaterial = ({ map, normalMap, roughnessMap, metalness, roughness, emissive, name }: MeshStandardMaterial) =>
+    new ColorMaskedMaterial({
         map,
         normalMap,
+        roughnessMap,
         metalness,
         roughness,
         emissive,
         name,
     });
 
-    return newMaterial;
-};
-
-export const getFirstMesh = (nodes: Object3D<Object3DEventMap>[]) => nodes.find((node) => (node as Mesh).isMesh) as MeshSingleMaterial;
+export const getFirstMesh = (nodes: Object3D<Object3DEventMap>[]) => nodes.find((node) => (node as Mesh).isMesh) as MeshWithSingleMaterial;
 export const _getFirstPlug = (nodes: GLTFResult['nodes']) => Object.values(nodes).find((node) => node.name.includes('plug_')) as Object3D;

@@ -13,9 +13,9 @@ void main() {
     float useCustomColor = vColor.a;
 
     vec3 vertexColors = mix(preColored, u_customColor, useCustomColor);
-    vec3 coloredMap = baseColor * (vertexColors * vec3(2.));
+    vec3 coloredMap = saturate(baseColor * (vertexColors * vec3(2.)));
 
     csm_DiffuseColor = vec4(coloredMap, opacity);
 
-    // csm_FragColor = vColor;
+    // csm_FragColor = vec4(coloredMap, 1.);
 }

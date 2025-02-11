@@ -34,10 +34,12 @@ export type SocketPosRot = [Vector3, Euler];
 export type SocketTransforms = { engineTransform: SocketPosRot; hoverPadTransforms: SocketPosRot[]; ornamentTransforms: SocketPosRot[] };
 
 /** Incoming from GLTFLoader */
-export type MeshSingleMaterial = Mesh<BufferGeometry, MeshStandardMaterial>;
+export type MeshWithSingleMaterial = Mesh<BufferGeometry, Material>;
 
-/** All loaded GLTF as a single mesh with Geometry & Material Groups */
-export type MeshMaterialArray = Mesh<BufferGeometry, ColorMaskedMaterial[]>;
+/** All loaded GLTF merged to a single mesh, with Geometry & Material Groups */
+export type MeshWithMaterialArray = Mesh<BufferGeometry, Material[]>;
+
+export type MeshWithCustomMaterialArray = Mesh<BufferGeometry, ColorMaskedMaterial[]>;
 
 export type GLTFResult = GLTF & {
     nodes: {

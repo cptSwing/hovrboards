@@ -1,7 +1,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Backdrop, Environment, Float, PerspectiveCamera } from '@react-three/drei';
 import { MathUtils, PlaneGeometry, Quaternion, RepeatWrapping, TextureLoader } from 'three';
-import { Bloom, EffectComposer } from '@react-three/postprocessing';
+import { Bloom, EffectComposer, FXAA } from '@react-three/postprocessing';
 import HoverBoardAssembly from './three/HoverBoardAssembly';
 import { Color, Vector3 } from 'three';
 import { useZustand } from '../zustand';
@@ -11,7 +11,7 @@ import ErrorBoundary from './ErrorBoundary';
 
 const Scene = () => {
     return (
-        <Canvas shadows={true} gl={{ alpha: false, antialias: true }}>
+        <Canvas shadows={true} gl={{ alpha: false, antialias: false }}>
             <Camera />
 
             <Float speed={10} rotationIntensity={0} floatIntensity={1} floatingRange={[-0.01, 0.01]}>
@@ -134,7 +134,10 @@ const Background = () => {
 const PostProcessing = () => {
     return (
         <EffectComposer>
-            <Bloom luminanceThreshold={1.1} mipmapBlur radius={0.6} intensity={1.5} />
+            <FXAA />
+
+            <Bloom luminanceThreshold={1.25} mipmapBlur radius={0.6} intensity={1} />
+
             {/* <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} /> */}
             {/* <Vignette eskil={false} offset={0.05} darkness={1.1} /> */}
         </EffectComposer>

@@ -1,15 +1,20 @@
 import { FC, useEffect, useRef } from 'react';
-import { DB_CommonType, MeshMaterialArray, SocketPosRot } from '../../types/types';
+import { DB_CommonType, MeshWithCustomMaterialArray, SocketPosRot } from '../../types/types';
 import usePrepareMesh from '../../hooks/usePrepareMesh';
+import { Euler, Vector3 } from 'three';
+
+const nullVector = new Vector3(0, 0, 0);
+const nullEuler = new Euler(0, 0, 0);
 
 const PlugAccessory: FC<{ dbData: DB_CommonType; socket: SocketPosRot }> = ({ dbData, socket }) => {
     const { filePath, hexColor } = dbData;
-    const [socketPosition, socketRotation] = socket;
+    const [socketPosition, socketRotation] = socket ?? [nullVector, nullEuler];
 
     const [accessoryMesh_Memo] = usePrepareMesh(filePath);
+
     const { name, position, rotation, material, geometry } = accessoryMesh_Memo;
 
-    const meshRef = useRef<MeshMaterialArray | null>(null);
+    const meshRef = useRef<MeshWithCustomMaterialArray | null>(null);
 
     useEffect(() => {
         if (meshRef.current) {

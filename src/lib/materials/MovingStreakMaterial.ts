@@ -1,4 +1,4 @@
-import { AdditiveBlending, MeshBasicMaterial, Texture } from 'three';
+import { AdditiveBlending, Clock, MeshBasicMaterial, Texture } from 'three';
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
 import movingStreak_VERT from '../shaders/movingStreak_VERT.glsl';
 import movingStreak_FRAG from '../shaders/movingStreak_FRAG.glsl';
@@ -29,4 +29,13 @@ export class MovingStreakMaterial extends CustomShaderMaterial {
             ...materialParams,
         });
     }
+
+    declare uniforms: {
+        u_time: {
+            value: Clock['elapsedTime'];
+        };
+        u_speed: {
+            value: MovingStreakMaterialParams['speed'];
+        };
+    };
 }

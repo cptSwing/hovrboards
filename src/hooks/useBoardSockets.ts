@@ -5,9 +5,9 @@ import { useZustand } from '../zustand';
 
 const { store_setSocketTransforms } = useZustand.getState().methods;
 
-const useBoardSockets = (boardSockets: Object3D[]) => {
+const useBoardSockets = (boardSockets?: Object3D[]) => {
     const sockets_Memo = useMemo(() => {
-        if (boardSockets.length) {
+        if (boardSockets?.length) {
             const engineTemp: (Vector3 | Euler)[] = [];
             const hoverPadSocketsTemp: [string, Vector3, Euler][] = [];
             const ornamentSocketsTemp: [string, Vector3, Euler][] = [];
