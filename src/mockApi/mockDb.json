@@ -4,7 +4,7 @@
             "id": 0,
             "name": "Ol' Regular",
             "description": "Your run of the mill Hoverboard, a tried and true classic!",
-            "filePath": "/gltf/board_regular.glb",
+            "filePath": "./gltf/board_regular.glb",
             "hexColor": "#eedf2d",
             "socketNames": {
                 "engine": "socket_engine",
@@ -16,7 +16,7 @@
             "id": 1,
             "name": "The Chubber",
             "description": "This boards' love handles allow more variety in feet placement!",
-            "filePath": "/gltf/board_chubber.glb",
+            "filePath": "./gltf/board_chubber.glb",
             "hexColor": "#bbecdf",
             "socketNames": {
                 "engine": "socket_engine",
@@ -28,7 +28,7 @@
             "id": 2,
             "name": "Stiletto",
             "description": "Sleek and deadly (hopefully to others only)",
-            "filePath": "/gltf/board_stiletto.glb",
+            "filePath": "./gltf/board_stiletto.glb",
             "hexColor": "#5a3c5e",
             "socketNames": {
                 "engine": "socket_engine",
@@ -42,14 +42,14 @@
             "id": 0,
             "name": "OVR9000",
             "description": "Copied often, seldom surpassed",
-            "filePath": "/gltf/engine_ovr.glb",
+            "filePath": "./gltf/engine_ovr.glb",
             "hexColor": "#dc6ac4"
         },
         {
             "id": 1,
             "name": "TurboJet",
             "description": "The Afterburner leaves an impression after burnin'!",
-            "filePath": "/gltf/engine_turbojet.glb",
+            "filePath": "./gltf/engine_turbojet.glb",
             "hexColor": "#cda64c"
         }
     ],
@@ -58,21 +58,21 @@
             "id": 0,
             "name": "Full Circle",
             "description": "The absolute Standard in soft hovering",
-            "filePath": "/gltf/hoverpad_fullcircle.glb",
+            "filePath": "./gltf/hoverpad_fullcircle.glb",
             "hexColor": "#47c2d1"
         },
         {
             "id": 1,
             "name": "The Slice",
             "description": "Less refined - radical turns!",
-            "filePath": "/gltf/hoverpad_theslice.glb",
+            "filePath": "./gltf/hoverpad_theslice.glb",
             "hexColor": "#b08f3f"
         },
         {
             "id": 2,
             "name": "Pow",
             "description": "You got it - pow()!",
-            "filePath": "/gltf/hoverpad_pow.glb",
+            "filePath": "./gltf/hoverpad_pow.glb",
             "hexColor": "#ccf5f7"
         }
     ],
@@ -81,14 +81,14 @@
             "id": 0,
             "name": "Bullhorns",
             "description": "Clear (and poke) obstacles on your route!",
-            "filePath": "/gltf/ornament_bullhorns.glb",
+            "filePath": "./gltf/ornament_bullhorns.glb",
             "hexColor": "#4a18b9"
         },
         {
             "id": 1,
             "name": "Star",
             "description": "Pointy in a pinch",
-            "filePath": "/gltf/ornament_star.glb",
+            "filePath": "./gltf/ornament_star.glb",
             "hexColor": "#cfb173"
         }
     ]

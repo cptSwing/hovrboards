@@ -1,5 +1,5 @@
 import { PresetsType } from '@react-three/drei/helpers/environment-assets';
-import { BufferGeometry, Euler, Material, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { BufferGeometry, Euler, Material, Mesh, Object3D, Vector3 } from 'three';
 import { GLTF } from 'three-stdlib';
 import { ColorMaskedMaterial } from '../lib/materials/ColorMaskedMaterial';
 
@@ -77,6 +77,9 @@ export type ZustandStore = {
         camera: {
             transitionSpeed: number;
         };
+        debug: {
+            isActive: boolean;
+        };
     };
 
     methods: {
@@ -89,5 +92,6 @@ export type ZustandStore = {
         store_setBackgroundSettings: ({ color, preset, isVisible, showBackdrop }: Partial<ZustandStore['settings']['background']>) => void;
         store_setCameraSettings: ({ transitionSpeed }: Partial<ZustandStore['settings']['camera']>) => void;
         store_setCameraValues: ({ position, lookAt }: Partial<{ position: Vector3; lookAt: Vector3 }>) => void;
+        store_setDebug: (isActive: boolean) => void;
     };
 };

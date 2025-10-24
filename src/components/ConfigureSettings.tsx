@@ -4,13 +4,14 @@ import ConfigureColor from './ConfigureColor';
 import { presetsObj, PresetsType } from '@react-three/drei/helpers/environment-assets';
 import { ConfigurationCard } from './ConfigurationCard';
 
-const { store_setBackgroundSettings, store_setCameraSettings } = useZustand.getState().methods;
+const { store_setBackgroundSettings, store_setCameraSettings, store_setDebug } = useZustand.getState().methods;
 
 const ConfigureSettings = () => {
     return (
         <div className='space-y-4'>
             <BackgroundSettings />
             <CameraSettings />
+            <DebugSettings />
         </div>
     );
 };
@@ -102,6 +103,27 @@ const CameraSettings: FC = () => {
                             }
                         }}
                         className='ml-2 rounded-sm px-2 text-gray-700 invalid:border-red-500'
+                    />
+                </div>
+            </div>
+        </ConfigurationCard>
+    );
+};
+
+const DebugSettings: FC = () => {
+    const debug = useZustand((store) => store.settings.debug.isActive);
+
+    return (
+        <ConfigurationCard title={'Debug'} group={'configure-settings'} defaultChecked={false}>
+            <div className='flex flex-col items-center justify-start gap-y-4 border-t border-t-slate-500 p-2 pb-3'>
+                <div>
+                    <label htmlFor='debug-is-active'>Debug:</label>
+                    <input
+                        id='debug-is-active'
+                        type='checkbox'
+                        defaultChecked={debug}
+                        onChange={({ target }) => store_setDebug(target.checked)}
+                        className='ml-2'
                     />
                 </div>
             </div>

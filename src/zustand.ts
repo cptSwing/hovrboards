@@ -26,13 +26,16 @@ export const useZustand = create<ZustandStore>()(
 
         settings: {
             background: {
-                preset: 'city',
-                isVisible: false,
+                preset: 'dawn',
+                isVisible: true,
                 color: '#808080',
-                showBackdrop: true,
+                showBackdrop: false,
             },
             camera: {
                 transitionSpeed: 0.1,
+            },
+            debug: {
+                isActive: false,
             },
         },
 
@@ -175,6 +178,12 @@ export const useZustand = create<ZustandStore>()(
                         ...(position && { position }),
                         ...(lookAt && { lookAt }),
                     };
+                });
+            },
+
+            store_setDebug: (isActive) => {
+                set((draftState) => {
+                    draftState.settings.debug.isActive = isActive;
                 });
             },
         },

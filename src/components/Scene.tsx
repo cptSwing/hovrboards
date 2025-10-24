@@ -10,24 +10,27 @@ import { MovingStreakMaterial } from '../lib/materials/MovingStreakMaterial';
 import ErrorBoundary from './ErrorBoundary';
 
 const Scene = () => {
+    const debug = useZustand((store) => store.settings.debug.isActive);
+
     return (
         <Canvas shadows={true} gl={{ alpha: false, antialias: false }}>
+            <directionalLight castShadow position={[-1, 1, 1]} />
             <Camera />
 
             <Float speed={10} rotationIntensity={0} floatIntensity={1} floatingRange={[-0.01, 0.01]}>
                 <HoverBoardAssembly />
             </Float>
 
-            <directionalLight castShadow position={[-1, 1, 1]} />
-
-            <axesHelper />
-
             <Background />
-
             <Streaks />
-
             <PostProcessing />
-            <Debug />
+
+            {debug && (
+                <>
+                    <axesHelper />
+                    <Debug />
+                </>
+            )}
         </Canvas>
     );
 };
@@ -115,8 +118,8 @@ const Background = () => {
     const scene = useThree((state) => state.scene);
 
     useEffect(() => {
-        scene.background = new Color(color);
-    }, [scene, color]);
+        if (!isVisible) scene.background = new Color(color);
+    }, [scene, color, isVisible]);
 
     return (
         <>
