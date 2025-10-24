@@ -82,7 +82,7 @@ const CameraMotion: FC<{
 };
 
 const textureLoader = new TextureLoader();
-const streakTexture = await textureLoader.loadAsync('/textures/streak.jpg');
+const streakTexture = textureLoader.load('/textures/streak.jpg');
 streakTexture.wrapS = RepeatWrapping;
 streakTexture.wrapT = RepeatWrapping;
 let elapsed = 0;
